@@ -33,45 +33,45 @@ impl<T> ODrive<T> where T: SerialPort + Clone {
         Self { writer, reader, state }
     }
 
-    pub fn set_position(&mut self, motor_number: u8, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) {
+    pub fn set_position(&mut self, motor_number: u8, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.writer, "p {} {} {} {}", motor_number, position, velocity_feed_forward, current_feed_forward);
+        writeln!(self.writer, "p {} {} {} {}", motor_number, position, velocity_feed_forward, current_feed_forward)
     }
 
-    pub fn set_velocity(&mut self, motor_number: u8, position: f32, current_feed_forward: Option<f32>) {
+    pub fn set_velocity(&mut self, motor_number: u8, position: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.writer, "v {} {} {}", motor_number, position, current_feed_forward);
+        writeln!(self.writer, "v {} {} {}", motor_number, position, current_feed_forward)
     }
 
-    pub fn set_current(&mut self, motor_number: u8, current: f32) {
-        writeln!(self.writer, "c {} {}", motor_number, current);
+    pub fn set_current(&mut self, motor_number: u8, current: f32) -> io::Result<()> {
+        writeln!(self.writer, "c {} {}", motor_number, current)
     }
 
-    pub fn trapezoidal_move(&mut self, motor_number: u8, position: f32) {
-        writeln!(self.writer, "t {} {}", motor_number, position);
+    pub fn trapezoidal_move(&mut self, motor_number: u8, position: f32) -> io::Result<()> {
+        writeln!(self.writer, "t {} {}", motor_number, position)
     }
 
-    pub fn get_velocity(&mut self, motor_number: u8) -> Result<f32, io::Error> {
-        writeln!(self.writer, "r axis{} .encoder.vel_estimate", motor_number);
+    pub fn get_velocity(&mut self, motor_number: u8) -> io::Result<f32> {
+        writeln!(self.writer, "r axis{} .encoder.vel_estimate", motor_number)?;
         self.read_float()
     }
 
-    pub fn read_float(&mut self) -> Result<f32, io::Error> {
+    pub fn read_float(&mut self) -> io::Result<f32> {
         Ok(self.read_string()?.parse().unwrap_or_default())
     }
 
-    pub fn read_int(&mut self) -> Result<i32, io::Error> {
+    pub fn read_int(&mut self) -> io::Result<i32> {
         Ok(self.read_string()?.parse().unwrap_or_default())
     }
 
-    pub fn run_state(&mut self, axis: u8, requested_state: AxisState, wait: bool) -> Result<bool, io::Error> {
+    pub fn run_state(&mut self, axis: u8, requested_state: AxisState, wait: bool) -> io::Result<bool> {
         let mut timeout_ctr = 100;
-        writeln!(self.writer, "w axis{}.requested_state", requested_state as u8);
+        writeln!(self.writer, "w axis{}.requested_state", requested_state as u8)?;
         if wait {
             while {
                 sleep(Duration::from_millis(100));
-                writeln!(self.writer, "r axis{}.current_state", axis);
+                writeln!(self.writer, "r axis{}.current_state", axis)?;
                 timeout_ctr -= 1;
                 self.read_int()? != AxisState::Idle as i32 && timeout_ctr > 0
             } {}
