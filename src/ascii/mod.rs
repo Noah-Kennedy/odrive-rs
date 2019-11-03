@@ -82,28 +82,33 @@ impl<T> ODrive<T> where T: Read + Write {
         assert!(motor_number < 2);
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.writer, "p {} {} {} {}", motor_number, position, velocity_feed_forward, current_feed_forward)
+        writeln!(self.writer, "p {} {} {} {}", motor_number, position, velocity_feed_forward, current_feed_forward)?;
+        self.flush()
     }
 
     pub fn set_velocity(&mut self, motor_number: u8, position: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
         assert!(motor_number < 2);
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.writer, "v {} {} {}", motor_number, position, current_feed_forward)
+        writeln!(self.writer, "v {} {} {}", motor_number, position, current_feed_forward)?;
+        self.flush()
     }
 
     pub fn set_current(&mut self, motor_number: u8, current: f32) -> io::Result<()> {
         assert!(motor_number < 2);
-        writeln!(self.writer, "c {} {}", motor_number, current)
+        writeln!(self.writer, "c {} {}", motor_number, current)?;
+        self.flush()
     }
 
     pub fn trapezoidal_move(&mut self, motor_number: u8, position: f32) -> io::Result<()> {
         assert!(motor_number < 2);
-        writeln!(self.writer, "t {} {}", motor_number, position)
+        writeln!(self.writer, "t {} {}", motor_number, position)?;
+        self.flush()
     }
 
     pub fn get_velocity(&mut self, motor_number: u8) -> io::Result<f32> {
         assert!(motor_number < 2);
         writeln!(self.writer, "r axis{} .encoder.vel_estimate", motor_number)?;
+        self.flush()?;
         self.read_float()
     }
 
@@ -118,10 +123,12 @@ impl<T> ODrive<T> where T: Read + Write {
     pub fn run_state(&mut self, axis: u8, requested_state: AxisState, wait: bool) -> io::Result<bool> {
         let mut timeout_ctr = 100;
         writeln!(self.writer, "w axis{}.requested_state", requested_state as u8)?;
+        self.flush()?;
         if wait {
             while {
                 sleep(Duration::from_millis(100));
                 writeln!(self.writer, "r axis{}.current_state", axis)?;
+                self.flush()?;
                 timeout_ctr -= 1;
                 self.read_int()? != AxisState::Idle as i32 && timeout_ctr > 0
             } {}
