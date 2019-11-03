@@ -79,25 +79,30 @@ impl<T> BufRead for ODrive<T> where T: Read + Write {
 
 impl<T> ODrive<T> where T: Read + Write {
     pub fn set_position(&mut self, motor_number: u8, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
+        debug_assert!(motor_number < 2);
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
         writeln!(self.writer, "p {} {} {} {}", motor_number, position, velocity_feed_forward, current_feed_forward)
     }
 
     pub fn set_velocity(&mut self, motor_number: u8, position: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
+        debug_assert!(motor_number < 2);
         let current_feed_forward = current_feed_forward.unwrap_or_default();
         writeln!(self.writer, "v {} {} {}", motor_number, position, current_feed_forward)
     }
 
     pub fn set_current(&mut self, motor_number: u8, current: f32) -> io::Result<()> {
+        debug_assert!(motor_number < 2);
         writeln!(self.writer, "c {} {}", motor_number, current)
     }
 
     pub fn trapezoidal_move(&mut self, motor_number: u8, position: f32) -> io::Result<()> {
+        debug_assert!(motor_number < 2);
         writeln!(self.writer, "t {} {}", motor_number, position)
     }
 
     pub fn get_velocity(&mut self, motor_number: u8) -> io::Result<f32> {
+        debug_assert!(motor_number < 2);
         writeln!(self.writer, "r axis{} .encoder.vel_estimate", motor_number)?;
         self.read_float()
     }
