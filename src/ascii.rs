@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use crate::cloning_help::ReadWriteCloningDecorator;
 
-#[repr(C)]
+#[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
     Undefined = 0,
