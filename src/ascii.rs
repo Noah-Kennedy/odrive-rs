@@ -112,6 +112,6 @@ impl<T> ODrive<T> where T: Read + Write {
     fn read_string(&mut self) -> io::Result<String> {
         let mut buffer = String::with_capacity(40);
         self.reader.read_line(&mut buffer)?;
-        Ok(buffer)
+        Ok(buffer.trim().to_owned())
     }
 }
