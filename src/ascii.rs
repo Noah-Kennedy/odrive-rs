@@ -1,9 +1,10 @@
-use std::io::{BufRead, BufReader, BufWriter, Read, Write};
+use std::io::{BufRead, BufReader, BufWriter, Error, Read, Write};
 use std::io;
-
-use serialport::SerialPort;
 use std::thread::sleep;
 use std::time::Duration;
+
+use serialport::SerialPort;
+
 use crate::serial_help::CloneableSerial;
 
 #[repr(C)]
@@ -26,7 +27,7 @@ pub struct ODrive<T> where T: Read + Write {
     pub state: AxisState,
 }
 
-impl <T> ODrive<CloneableSerial<T>> where T: Read + Write {
+impl<T> ODrive<CloneableSerial<T>> where T: Read + Write {
     pub fn new(serial: T) -> Self {
         let serial = CloneableSerial::new(serial);
         let reader = BufReader::new(serial.clone());
@@ -36,7 +37,33 @@ impl <T> ODrive<CloneableSerial<T>> where T: Read + Write {
     }
 }
 
-impl<T> ODrive<T> where T: SerialPort {
+impl<T> Write for ODrive<T> where T: Write + Read {
+    fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
+        self.writer.write(buf)
+    }
+
+    fn flush(&mut self) -> Result<(), Error> {
+        self.writer.flush()
+    }
+}
+
+impl<T> Read for ODrive<T> where T: Read + Write {
+    fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
+        self.reader.read(buf)
+    }
+}
+
+impl<T> BufRead for ODrive<T> where T: Read + Write {
+    fn fill_buf(&mut self) -> Result<&[u8], Error> {
+        self.reader.fill_buf()
+    }
+
+    fn consume(&mut self, amt: usize) {
+        self.reader.consume(amt)
+    }
+}
+
+impl<T> ODrive<T> where T: Read + Write {
     pub fn set_position(&mut self, motor_number: u8, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
