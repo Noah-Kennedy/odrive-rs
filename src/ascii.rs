@@ -19,6 +19,7 @@ pub enum AxisState {
     ClosedLoopControl = 8,
 }
 
+/// Represents a connection with an ODrive motor controller.
 pub struct ODrive<T> where T: Read + Write {
     writer: BufWriter<T>,
     reader: BufReader<T>,
@@ -26,6 +27,9 @@ pub struct ODrive<T> where T: Read + Write {
 }
 
 impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
+    /// Constructs a new ODrive connection using the `ReadWriteCloningDecorator`.
+    /// This method of construction will have consequences in overhead.
+    /// It should only be used when it is not possible to clone the type `T`.
     pub fn new(serial: T) -> Self {
         let serial = ReadWriteCloningDecorator::new(serial);
         let reader = BufReader::new(serial.clone());
