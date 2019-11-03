@@ -73,6 +73,11 @@ impl<T> BufRead for ODrive<T> where T: Read + Write {
 }
 
 impl<T> ODrive<T> where T: Read + Write {
+    #[cfg(test)]
+    fn from_pair(reader: BufReader<T>, writer: BufWriter<T>) -> Self {
+        Self { writer, reader }
+    }
+
     pub fn set_position(&mut self, motor_number: u8, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
         assert!(motor_number < 2);
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
