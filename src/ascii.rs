@@ -3,7 +3,7 @@ use std::io;
 use std::thread::sleep;
 use std::time::Duration;
 
-use crate::serial_help::ReadWriteCloningDecorator;
+use crate::cloning_help::ReadWriteCloningDecorator;
 
 #[repr(C)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
