@@ -26,7 +26,6 @@ pub enum AxisState {
 pub struct ODrive<T> where T: Read + Write {
     writer: BufWriter<T>,
     reader: BufReader<T>,
-    pub state: AxisState,
 }
 
 impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
@@ -35,10 +34,7 @@ impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
     /// It should only be used when it is not possible to clone the type `T`.
     pub fn new(serial: T) -> Self {
         let serial = ReadWriteCloningDecorator::new(serial);
-        let reader = BufReader::new(serial.clone());
-        let writer = BufWriter::new(serial);
-        let state = AxisState::Undefined;
-        Self { writer, reader, state }
+        Self::from_cloneable(serial)
     }
 }
 
@@ -46,8 +42,7 @@ impl<T> ODrive<T> where T: Read + Write + Clone {
     pub fn from_cloneable(serial: T) -> Self {
         let reader = BufReader::new(serial.clone());
         let writer = BufWriter::new(serial);
-        let state = AxisState::Undefined;
-        Self { writer, reader, state }
+        Self { writer, reader }
     }
 }
 
