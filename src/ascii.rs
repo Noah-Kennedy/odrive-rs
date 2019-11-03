@@ -80,7 +80,7 @@ impl<T> ODrive<T> where T: SerialPort + Clone {
         Ok(timeout_ctr > 0)
     }
 
-    fn read_string(&mut self) -> Result<String, io::Error> {
+    fn read_string(&mut self) -> io::Result<String> {
         let mut buffer = String::with_capacity(40);
         self.reader.read_line(&mut buffer)?;
         Ok(buffer)
