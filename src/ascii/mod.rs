@@ -43,9 +43,6 @@ impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
 }
 
 impl<T> ODrive<T> where T: Read + Write + Clone {
-    /// Constructs a new ODrive connection using the `ReadWriteCloningDecorator`.
-    /// This method of construction will have consequences in overhead.
-    /// It should only be used when it is not possible to clone the type `T`.
     pub fn from_cloneable(serial: T) -> Self {
         let reader = BufReader::new(serial.clone());
         let writer = BufWriter::new(serial);
