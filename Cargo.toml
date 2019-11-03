@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 serialport = "3.3.0"
+
+[[example]]
+name = "odrive_usb_test"
