@@ -41,7 +41,7 @@ fn main() {
 
     println!("Ready!");
     println!("Send the character '0' or '1' to calibrate respective motor (you must do this before you can command movement)");
-    println!("Send the character 's' to exectue test move");
+    println!("Send the character 's' to execute test move");
     println!("Send the character 'b' to read bus voltage");
     println!("Send the character 'p' to read motor positions in a 10s loop");
 
@@ -69,12 +69,12 @@ fn main() {
                 's' => {
                     println!("Executing test move");
                     let mut ph: f32 = 0.0;
-                    while ph < 6.283_185_307_18 {
+                    while ph < 6.283_185_5 {
                         let pos_m0 = 20000.0 * ph.cos();
                         let pos_m1 = 20000.0 * ph.sin();
 
-                        odrive.set_position(0, pos_m0, None, None);
-                        odrive.set_position(1, pos_m1, None, None);
+                        odrive.set_position(0, pos_m0, None, None).unwrap();
+                        odrive.set_position(1, pos_m1, None, None).unwrap();
 
                         ph += 0.01;
                         sleep(Duration::from_millis(5));
