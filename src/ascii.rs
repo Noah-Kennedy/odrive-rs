@@ -3,9 +3,7 @@ use std::io;
 use std::thread::sleep;
 use std::time::Duration;
 
-use serialport::SerialPort;
-
-use crate::serial_help::CloneableSerial;
+use crate::serial_help::ReadWriteCloningDecorator;
 
 #[repr(C)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
@@ -27,9 +25,9 @@ pub struct ODrive<T> where T: Read + Write {
     pub state: AxisState,
 }
 
-impl<T> ODrive<CloneableSerial<T>> where T: Read + Write {
+impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
     pub fn new(serial: T) -> Self {
-        let serial = CloneableSerial::new(serial);
+        let serial = ReadWriteCloningDecorator::new(serial);
         let reader = BufReader::new(serial.clone());
         let writer = BufWriter::new(serial);
         let state = AxisState::Undefined;
