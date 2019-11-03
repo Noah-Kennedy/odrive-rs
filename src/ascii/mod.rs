@@ -88,7 +88,9 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 
     pub fn read_float(&mut self) -> io::Result<f32> {
-        Ok(self.read_string()?.parse().unwrap_or_default())
+        let read_str = self.read_string()?;
+        println!("{}", read_str);
+        Ok(read_str.parse().unwrap())
     }
 
     pub fn read_int(&mut self) -> io::Result<i32> {
@@ -130,7 +132,7 @@ impl<T> ODrive<T> where T: Read + Write {
             string.push(ch as char);
         }
 
-        println!("{}", string);
-        Ok(string)
+//        println!("{}", string);
+        Ok(string.trim().to_owned())
     }
 }
