@@ -5,6 +5,9 @@ use std::time::Duration;
 
 use crate::cloning_help::ReadWriteCloningDecorator;
 
+#[cfg(test)]
+mod tests;
+
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
@@ -32,6 +35,18 @@ impl<T> ODrive<ReadWriteCloningDecorator<T>> where T: Read + Write {
     /// It should only be used when it is not possible to clone the type `T`.
     pub fn new(serial: T) -> Self {
         let serial = ReadWriteCloningDecorator::new(serial);
+        let reader = BufReader::new(serial.clone());
+        let writer = BufWriter::new(serial);
+        let state = AxisState::Undefined;
+        Self { writer, reader, state }
+    }
+}
+
+impl<T> ODrive<T> where T: Read + Write + Clone {
+    /// Constructs a new ODrive connection using the `ReadWriteCloningDecorator`.
+    /// This method of construction will have consequences in overhead.
+    /// It should only be used when it is not possible to clone the type `T`.
+    pub fn from_cloneable(serial: T) -> Self {
         let reader = BufReader::new(serial.clone());
         let writer = BufWriter::new(serial);
         let state = AxisState::Undefined;
