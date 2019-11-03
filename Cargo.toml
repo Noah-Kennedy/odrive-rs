@@ -3,6 +3,8 @@ name = "odrive-rs"
 version = "0.1.0"
 authors = ["noah <nomaxx117@gmail.com>"]
 edition = "2018"
+description = "A library for controlling the ODrive motor controllers."
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
