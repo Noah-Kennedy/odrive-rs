@@ -114,7 +114,7 @@ impl<T> ODrive<T> where T: Read + Write {
         Ok(timeout_ctr > 0)
     }
 
-    fn read_string(&mut self) -> io::Result<String> {
+    pub fn read_string(&mut self) -> io::Result<String> {
         let mut string = String::with_capacity(20);
         let duration = Instant::now();
         loop {
