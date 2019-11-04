@@ -9,7 +9,7 @@ This library was based heavily on the ODrive python and Arduino libraries.
 
 ## Roadmap
 - [x] ASCII protocol commands
-- [ ] ODrive property editing.
+- [ ] ODrive property editing
 
 ## Documentation
 
