@@ -9,11 +9,13 @@ use crate::enumerations::AxisState;
 mod tests;
 
 /// Represents a connection with an ODrive motor controller.
+#[derive(Debug, Default, Ord, PartialOrd, Eq, PartialEq, Clone)]
 pub struct ODrive<T> {
     io_stream: T
 }
 
 impl<T> ODrive<T> {
+    /// The constructor for an ODrive
     pub fn new(io_stream: T) -> Self {
         Self { io_stream }
     }
