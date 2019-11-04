@@ -2,11 +2,15 @@
 [![Build Status](https://travis-ci.com/Noah-Kennedy/odrive-rs.svg?branch=master)](https://travis-ci.com/Noah-Kennedy/odrive-rs)
 [![codecov](https://codecov.io/gh/Noah-Kennedy/odrive-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/Noah-Kennedy/odrive-rs)
 
-A library for control of ODrive motor controllers.
+A community library for control of ODrive motor controllers.
+This library was based heavily on the ODrive python and Arduino libraries.
+
+## Roadmap
+- [x] Arduino Parity
+- [ ] Basic ASCII Protocol
+- [ ] Property Reads/Writes
 
 ## Documentation
-
-## Examples
 
 ## Current State
 Currently, only the ASCII protocol is supported.
