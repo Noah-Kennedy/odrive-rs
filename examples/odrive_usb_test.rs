@@ -7,7 +7,8 @@ use std::time::{Duration, Instant};
 
 use serialport::SerialPortSettings;
 
-use odrive_rs::ascii::{AxisState, ODrive};
+use odrive_rs::ascii::{ODrive};
+use odrive_rs::enumerations::AxisState;
 
 fn main() {
     // Get CLI args

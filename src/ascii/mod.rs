@@ -2,23 +2,10 @@ use std::io::{BufRead, BufReader, BufWriter, Error, Read, Write};
 use std::io;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use crate::enumerations::AxisState;
 
 #[cfg(test)]
 mod tests;
-
-#[repr(u8)]
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum AxisState {
-    Undefined = 0,
-    Idle = 1,
-    StartupSequence = 2,
-    FullCalibrationSequence = 3,
-    MotorCalibration = 4,
-    SensorlessControl = 5,
-    EncoderIndexSearch = 6,
-    EncoderOffsetCalibration = 7,
-    ClosedLoopControl = 8,
-}
 
 /// Represents a connection with an ODrive motor controller.
 pub struct ODrive<T> where T: Read + Write {

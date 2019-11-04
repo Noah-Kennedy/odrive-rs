@@ -1,13 +1,11 @@
 use std::env::args;
-use std::io::{BufRead, BufReader, stdin, Error};
+use std::io::{BufRead, BufReader, stdin};
 use std::io::Write;
 use std::path::Path;
-use std::thread::sleep;
-use std::time::{Duration, Instant};
 
 use serialport::SerialPortSettings;
 
-use odrive_rs::ascii::{AxisState, ODrive};
+use odrive_rs::ascii::ODrive;
 
 fn main() {
     // Get CLI args
