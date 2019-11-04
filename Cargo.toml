@@ -6,7 +6,7 @@ edition = "2018"
 description = "A library for controlling the ODrive motor controllers."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Noah-Kennedy/odrive-rs/"
-keywords = ["odrive", "motor", "brushless", "motor controller"]
+keywords = ["odrive", "motor", "brushless"]
 travis-ci = { repository = "Noah-Kennedy/odrive-rs" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
