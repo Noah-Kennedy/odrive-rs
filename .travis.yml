@@ -3,13 +3,14 @@ language: rust
 before_install:
   - curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
 
+rust:
+  - stable
+  - beta
+  - nightly
+
 jobs:
   include:
     - stage: Tests
-      rust:
-        - stable
-        - beta
-        - nightly
       cache: cargo
       script: cargo test
     - stage: Coverage
