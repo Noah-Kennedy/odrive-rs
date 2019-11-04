@@ -139,12 +139,15 @@ impl<T> ODrive<T> where T: Write {
 }
 
 impl<T> ODrive<T> where T: Read + Write {
+    /// Retrieves the velocity of a motor, in counts per second.
     pub fn get_velocity(&mut self, axis: Axis) -> io::Result<f32> {
         writeln!(self.io_stream, "r axis{} .encoder.vel_estimate", axis as u8)?;
         self.flush()?;
         self.read_float()
     }
 
+    /// Changes the state of an axis.
+    /// The `wait` flag indicates whether this command should block until the state is updated.
     pub fn run_state(&mut self, axis: Axis, requested_state: AxisState, wait: bool) -> io::Result<bool> {
         let mut timeout_ctr = 100;
         writeln!(self.io_stream, "w axis{}.requested_state {}", axis as u8, requested_state as u8)?;
