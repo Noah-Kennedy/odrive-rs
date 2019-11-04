@@ -8,9 +8,8 @@ A community library for control of ODrive motor controllers.
 This library was based heavily on the ODrive python and Arduino libraries.
 
 ## Roadmap
-- [x] Arduino Parity
-- [ ] Basic ASCII Protocol
-- [ ] Property Reads/Writes
+- [x] ASCII protocol commands
+- [ ] ODrive property editing.
 
 ## Documentation
 
