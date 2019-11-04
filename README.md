@@ -1,5 +1,6 @@
 # odrive-rs
 ![](https://api.travis-ci.com/Noah-Kennedy/odrive-rs.svg?branch=master) 
+
 A library for control of ODrive motor controllers.
 
 ## Documentation
