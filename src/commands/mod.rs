@@ -158,7 +158,7 @@ impl<T> ODrive<T> where T: Read + Write {
                 writeln!(self.io_stream, "r axis{}.current_state", axis as u8)?;
                 self.flush()?;
                 timeout_ctr -= 1;
-                self.read_int().unwrap_or_default() != AxisState::Idle as i32 && timeout_ctr > 0
+                self.read_int()? != AxisState::Idle as i32 && timeout_ctr > 0 // exit
             } {}
         }
 
