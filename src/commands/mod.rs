@@ -82,21 +82,36 @@ impl<T> ODrive<T> where T: Read {
 }
 
 impl<T> ODrive<T> where T: Write {
-    /// Specifies a position setpoint for the motor.
-    /// `axis` TODO
+    /// Move the motor to a position. Use this command if you have a real-time controller which
+    /// is streaming setpoints and tracking a trajectory.
+    /// `axis` The motor to be used for the operation.
     /// `position` is the desired position, in encoder counts.
     /// `velocity_feed_forward` is the velocity feed forward term, in encoder counts per second.
     /// `current_feed_forward` is the current feed forward term, in amps.
     /// If `None` is supplied for a feed forward input, zero will be provided as a default.
-    pub fn set_position(&mut self, axis: Axis, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
+    pub fn set_position_p(&mut self, axis: Axis, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
         writeln!(self.io_stream, "p {} {} {} {}", axis as u8, position, velocity_feed_forward, current_feed_forward)?;
         self.flush()
     }
 
+    /// Move the motor to a position. Use this command if you are sending one setpoint at a time.
+    /// `axis` The motor to be used for the operation.
+    /// `position` is the desired position, in encoder counts.
+    /// `velocity_limit` is the velocity limit, in encoder counts per second.
+    /// `current_limit` is the current limit, in amps.
+    /// If `None` is supplied for a limit, zero will be provided as a default.
+    pub fn set_position_q(&mut self, axis: Axis, position: f32, velocity_limit: Option<f32>, current_limit: Option<f32>) -> io::Result<()> {
+        let velocity_feed_forward = velocity_limit.unwrap_or_default();
+        let current_feed_forward = current_limit.unwrap_or_default();
+        writeln!(self.io_stream, "q {} {} {} {}", axis as u8, position, velocity_feed_forward, current_feed_forward)?;
+        self.flush()
+    }
+
     /// Specifies a velocity setpoint for the motor.
-    /// `velocity` is the velocity feed forward term, in encoder counts per second.
+    /// `axis` The motor to be used for the operation.
+    /// `velocity` is the velocity setpoint, in encoder counts per second.
     /// `current_feed_forward` is the current feed forward term, in amps.
     /// If `None` is supplied for a feed forward input, zero will be provided as a default.
     pub fn set_velocity(&mut self, axis: Axis, position: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
@@ -105,12 +120,19 @@ impl<T> ODrive<T> where T: Write {
         self.flush()
     }
 
+    /// Specifies a velocity setpoint for the motor.
+    /// `axis` The motor to be used for the operation.
+    /// `current` is the current to be supplied, in amps.
     pub fn set_current(&mut self, axis: Axis, current: f32) -> io::Result<()> {
         writeln!(self.io_stream, "c {} {}", axis as u8, current)?;
         self.flush()
     }
 
-    pub fn trapezoidal_move(&mut self, axis: Axis, position: f32) -> io::Result<()> {
+    /// Moves a motor to a given position
+    /// For general movement, this is the best command.
+    /// `axis` The motor to be used for the operation.
+    /// `position` is the desired position, in encoder counts.
+    pub fn set_trajectory(&mut self, axis: Axis, position: f32) -> io::Result<()> {
         writeln!(self.io_stream, "t {} {}", axis as u8, position)?;
         self.flush()
     }

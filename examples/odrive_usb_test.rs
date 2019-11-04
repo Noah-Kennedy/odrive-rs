@@ -78,8 +78,8 @@ fn main() {
                             let pos_m0 = 20000.0 * ph.cos();
                             let pos_m1 = 20000.0 * ph.sin();
 
-                            odrive.set_position(Axis::Zero, pos_m0, None, None).unwrap();
-                            odrive.set_position(Axis::One, pos_m1, None, None).unwrap();
+                            odrive.set_position_p(Axis::Zero, pos_m0, None, None).unwrap();
+                            odrive.set_position_p(Axis::One, pos_m1, None, None).unwrap();
 
                             ph += 0.01;
                             sleep(Duration::from_millis(5));
