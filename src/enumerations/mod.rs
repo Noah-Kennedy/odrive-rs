@@ -1,7 +1,9 @@
 //! This file was derived from [the python library](https://github.com/madcowswe/ODrive/blob/master/tools/odrive/enums.py)
 
+/// Contains error enums that can be sent from the ODrive
 pub mod errors;
 
+/// Used to indicate one of the two motors controlled by the ODrive.
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum Axis {

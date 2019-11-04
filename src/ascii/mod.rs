@@ -1,7 +1,8 @@
-use std::io::{BufRead, BufReader, BufWriter, Error, Read, Write};
+use std::io::{Error, Read, Write};
 use std::io;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+
 use crate::enumerations::AxisState;
 
 #[cfg(test)]
