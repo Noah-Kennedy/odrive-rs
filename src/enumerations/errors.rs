@@ -1,17 +1,9 @@
-//! This file was derived from [the python library](https://github.com/madcowswe/ODrive/blob/master/tools/odrive/enums.py)
-
-#[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum AxisState {
-    Undefined = 0,
-    Idle = 1,
-    StartupSequence = 2,
-    FullCalibrationSequence = 3,
-    MotorCalibration = 4,
-    SensorlessControl = 5,
-    EncoderIndexSearch = 6,
-    EncoderOffsetCalibration = 7,
-    ClosedLoopControl = 8,
+pub enum ODriveError {
+    Axis(AxisError),
+    Motor(MotorError),
+    Encoder(EncoderError),
+    Controller(ControllerError),
 }
 
 #[repr(u16)]
@@ -47,7 +39,7 @@ pub enum MotorError {
     ErrorNotImplementedMotorType = 0x0020,
     ErrorBrakeCurrentOutOfRange = 0x0040,
     ErrorModulationMagnitude = 0x0080,
-    ErrorBrakeDeadtimeViolation = 0x0100,
+    ErrorBrakeDeadTimeViolation = 0x0100,
     ErrorUnexpectedTimerCallback = 0x0200,
     ErrorCurrentSenseSaturation = 0x0400,
     ErrorCurrentUnstable = 0x1000,
@@ -70,38 +62,4 @@ pub enum EncoderError {
 pub enum ControllerError {
     ErrorNone = 0,
     ErrorOverspeed = 0x01,
-}
-
-#[repr(u16)]
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum ODriveError {
-    Axis(AxisError),
-    Motor(MotorError),
-    Encoder(EncoderError),
-    Controller(ControllerError),
-}
-
-#[repr(u8)]
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum MotorType {
-    HighCurrent = 0,
-    //LowCurrent = 1,
-    MotorTypeGimbal = 2,
-}
-
-#[repr(u8)]
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum ControlMode {
-    VoltageControl = 0,
-    CurrentControl = 1,
-    VelocityControl = 2,
-    PositionControl = 3,
-    TrajectoryControl = 4,
-}
-
-#[repr(u8)]
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum EncoderMode {
-    EncoderModeIncremental = 0,
-    EncoderModeHall = 1,
 }
