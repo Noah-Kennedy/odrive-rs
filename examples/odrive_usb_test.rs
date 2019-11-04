@@ -7,8 +7,8 @@ use std::time::{Duration, Instant};
 
 use serialport::SerialPortSettings;
 
-use odrive_rs::ascii::{ODrive};
-use odrive_rs::enumerations::AxisState;
+use odrive_rs::commands::{ODrive};
+use odrive_rs::enumerations::{AxisState, Axis};
 
 fn main() {
     // Get CLI args
@@ -59,16 +59,16 @@ fn main() {
                 match first {
                     // Run calibration sequence
                     '0' | '1' => {
-                        let motor_num = first as u32 - '0' as u32;
+                        let motor_num = if first == '0' { Axis::Zero } else { Axis::One };
 
                         println!("Axis {}: Requesting state {:?}", first, AxisState::MotorCalibration);
-                        odrive.run_state(motor_num as u8, AxisState::MotorCalibration, true).unwrap();
+                        odrive.run_state(motor_num, AxisState::MotorCalibration, true).unwrap();
 
                         println!("Axis {}: Requesting state {:?}", first, AxisState::EncoderOffsetCalibration);
-                        odrive.run_state(motor_num as u8, AxisState::EncoderOffsetCalibration, true).unwrap();
+                        odrive.run_state(motor_num, AxisState::EncoderOffsetCalibration, true).unwrap();
 
                         println!("Axis {}: Requesting state {:?}", first, AxisState::ClosedLoopControl);
-                        odrive.run_state(motor_num as u8, AxisState::ClosedLoopControl, false).unwrap();
+                        odrive.run_state(motor_num, AxisState::ClosedLoopControl, false).unwrap();
                     }
                     // Sinusoidal test move
                     's' => {
@@ -78,8 +78,8 @@ fn main() {
                             let pos_m0 = 20000.0 * ph.cos();
                             let pos_m1 = 20000.0 * ph.sin();
 
-                            odrive.set_position(0, pos_m0, None, None).unwrap();
-                            odrive.set_position(1, pos_m1, None, None).unwrap();
+                            odrive.set_position(Axis::Zero, pos_m0, None, None).unwrap();
+                            odrive.set_position(Axis::One, pos_m1, None, None).unwrap();
 
                             ph += 0.01;
                             sleep(Duration::from_millis(5));
@@ -87,7 +87,7 @@ fn main() {
                     }
                     // Read bus voltage
                     'b' => {
-                        writeln!(odrive, "r vbus_voltage");
+                        writeln!(odrive, "r vbus_voltage").unwrap();
                         println!("Vbus voltage: {}", odrive.read_float().unwrap());
                     }
                     // print motor positions in a 10s loop
@@ -95,7 +95,7 @@ fn main() {
                         let start = Instant::now();
                         while start.elapsed().as_millis() < 10_000 {
                             for axis in 0..2 {
-                                writeln!(odrive, "r axis{}.encoder.pos_estimate", axis);
+                                writeln!(odrive, "r axis{}.encoder.pos_estimate", axis).unwrap();
                                 print!("{}\t", odrive.read_float().unwrap_or_default());
                             }
                             println!();

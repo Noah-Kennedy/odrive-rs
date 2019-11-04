@@ -5,7 +5,7 @@ use std::path::Path;
 
 use serialport::SerialPortSettings;
 
-use odrive_rs::ascii::ODrive;
+use odrive_rs::commands::ODrive;
 
 fn main() {
     // Get CLI args
