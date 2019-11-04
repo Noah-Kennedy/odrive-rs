@@ -1,3 +1,5 @@
+//! This file was derived from [the python library](https://github.com/madcowswe/ODrive/blob/master/tools/odrive/enums.py)
+
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
@@ -77,4 +79,29 @@ pub enum ODriveError {
     Motor(MotorError),
     Encoder(EncoderError),
     Controller(ControllerError),
+}
+
+#[repr(u8)]
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+pub enum MotorType {
+    HighCurrent = 0,
+    //LowCurrent = 1,
+    MotorTypeGimbal = 2,
+}
+
+#[repr(u8)]
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+pub enum ControlMode {
+    VoltageControl = 0,
+    CurrentControl = 1,
+    VelocityControl = 2,
+    PositionControl = 3,
+    TrajectoryControl = 4,
+}
+
+#[repr(u8)]
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+pub enum EncoderMode {
+    EncoderModeIncremental = 0,
+    EncoderModeHall = 1,
 }
