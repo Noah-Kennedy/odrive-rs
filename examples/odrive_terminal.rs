@@ -39,14 +39,18 @@ fn main() {
         input_reader.read_line(&mut line).unwrap();
         let trimmed = line.trim();
 
-        // Write response to stdout
-        writeln!(odrive, "{}", trimmed).expect("Failed to send command to odrive!");
-        let response = odrive.read_string().unwrap();
-        if !response.is_empty() {
-            println!("{}", response);
-        }
+        if trimmed != "!exit" {
+            // Write response to stdout
+            writeln!(odrive, "{}", trimmed).expect("Failed to send command to odrive!");
+            let response = odrive.read_string().unwrap();
+            if !response.is_empty() {
+                println!("{}", response);
+            }
 
-        // clear line buffer
-        line.clear()
+            // clear line buffer
+            line.clear()
+        } else {
+            break;
+        }
     }
 }
