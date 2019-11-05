@@ -58,6 +58,19 @@ fn main() {
             if let Some(first) = trimmed.chars().nth(0) {
                 match first {
                     // Run calibration sequence
+                    'c' => {
+                        println!("Requesting state {:?}", AxisState::MotorCalibration);
+                        odrive.run_state(Axis::Zero, AxisState::MotorCalibration, true).unwrap();
+                        odrive.run_state(Axis::One, AxisState::MotorCalibration, true).unwrap();
+
+                        println!("Requesting state {:?}", AxisState::EncoderOffsetCalibration);
+                        odrive.run_state(Axis::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
+                        odrive.run_state(Axis::One, AxisState::EncoderOffsetCalibration, true).unwrap();
+
+                        println!("Requesting state {:?}", AxisState::ClosedLoopControl);
+                        odrive.run_state(Axis::Zero, AxisState::ClosedLoopControl, false).unwrap();
+                        odrive.run_state(Axis::One, AxisState::ClosedLoopControl, false).unwrap();
+                    }
                     '0' | '1' => {
                         let motor_num = if first == '0' { Axis::Zero } else { Axis::One };
 
@@ -73,17 +86,24 @@ fn main() {
                     // Sinusoidal test move
                     's' => {
                         println!("Executing test move");
-                        let mut ph: f32 = 0.0;
-                        while ph < 6.283_185_5 {
-                            let pos_m0 = 20000.0 * ph.cos();
-                            let pos_m1 = 20000.0 * ph.sin();
+                        odrive.set_velocity(Axis::Zero, 90.0, None).unwrap();
+                        odrive.set_velocity(Axis::One, 90.0, None).unwrap();
 
-                            odrive.set_position_p(Axis::Zero, pos_m0, None, None).unwrap();
-                            odrive.set_position_p(Axis::One, pos_m1, None, None).unwrap();
+                        sleep(Duration::from_millis(10_000));
 
-                            ph += 0.01;
-                            sleep(Duration::from_millis(5));
-                        }
+                        odrive.set_velocity(Axis::Zero, -90.0, None).unwrap();
+                        odrive.set_velocity(Axis::One, -90.0, None).unwrap();
+//                        let mut ph: f32 = 0.0;
+//                        while ph < 6.283_185_5 {
+//                            let pos_m0 = 20000.0 * ph.cos();
+////                            let pos_m1 = 20000.0 * ph.sin();
+//
+//                            odrive.set_position_p(Axis::Zero, pos_m0, None, None).unwrap();
+//                            odrive.set_position_p(Axis::One, pos_m0, None, None).unwrap();
+//
+//                            ph += 0.01;
+//                            sleep(Duration::from_millis(5));
+//                        }
                     }
                     // Read bus voltage
                     'b' => {
