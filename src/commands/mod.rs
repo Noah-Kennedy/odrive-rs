@@ -3,8 +3,9 @@ use std::io;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
-use crate::enumerations::{Axis, AxisState};
+use crate::enumerations::{Axis, AxisState, ControlMode};
 use crate::enumerations::errors::{ODriveError, ODriveResult};
+use std::fmt::Display;
 
 #[cfg(test)]
 mod tests;
@@ -167,15 +168,25 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // Startup routine
+    // Configuration
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    fn set_config_bool(&mut self, axis: Axis, name: &str, value: bool) -> ODriveResult<()> {
-        if let Err(error) = writeln!(self.io_stream, "w axis{}.config.{} {}", name, axis as u8, value as u8) {
+    fn set_config_variable<D: Display>(&mut self, param: &str, value: D) -> ODriveResult<()> {
+        if let Err(error) = writeln!(self.io_stream, "w {} {}", param, value) {
             ODriveResult::Err(ODriveError::Io(error))
         } else {
             Ok(())
         }
+    }
+
+    fn set_axis_config<D: Display>(&mut self, axis: Axis, property: &str, value: D) -> ODriveResult<()> {
+        let config = format!("axis{}.{}", axis as u8, property);
+        self.set_config_variable(&config, value)
+    }
+
+    fn set_config_bool(&mut self, axis: Axis, name: &str, value: bool) -> ODriveResult<()> {
+        let config = format!("axis{}.config.{}", name, axis as u8);
+        self.set_config_variable(&config, value as u8)
     }
 
     pub fn set_config_startup_motor_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
@@ -196,5 +207,25 @@ impl<T> ODrive<T> where T: Read + Write {
 
     pub fn set_config_startup_sensorless_control(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
         self.set_config_bool(axis, "startup_sensorless_control", value)
+    }
+
+    pub fn set_control_mode(&mut self, axis: Axis, mode: ControlMode) -> ODriveResult<()> {
+        self.set_axis_config(axis, "controller.config.control_mode", mode as u8)
+    }
+
+    pub fn save_configuration(&mut self) -> ODriveResult<()> {
+        if let Err(error) = writeln!(self.io_stream, "ss") {
+            ODriveResult::Err(ODriveError::Io(error))
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn erase_configuration(&mut self) -> ODriveResult<()> {
+        if let Err(error) = writeln!(self.io_stream, "se") {
+            ODriveResult::Err(ODriveError::Io(error))
+        } else {
+            Ok(())
+        }
     }
 }
