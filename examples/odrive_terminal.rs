@@ -40,8 +40,7 @@ fn main() {
         if trimmed != "!exit" {
             // Write response to stdout
             writeln!(odrive, "{}", trimmed).expect("Failed to send command to odrive!");
-            let response = odrive.read_string().unwrap();
-            if !response.is_empty() {
+            if let Some(response) = odrive.read_string().unwrap() {
                 println!("{}", response);
             }
 

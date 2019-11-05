@@ -108,7 +108,7 @@ fn main() {
                     // Read bus voltage
                     'b' => {
                         writeln!(odrive, "r vbus_voltage").unwrap();
-                        println!("Vbus voltage: {}", odrive.read_float().unwrap());
+                        println!("Vbus voltage: {}", odrive.read_float().unwrap().unwrap());
                     }
                     // print motor positions in a 10s loop
                     'p' => {
@@ -116,7 +116,7 @@ fn main() {
                         while start.elapsed().as_millis() < 10_000 {
                             for axis in 0..2 {
                                 writeln!(odrive, "r axis{}.encoder.pos_estimate", axis).unwrap();
-                                print!("{}\t", odrive.read_float().unwrap_or_default());
+                                print!("{}\t", odrive.read_float().unwrap_or_default().unwrap_or_default());
                             }
                             println!();
                         }

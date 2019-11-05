@@ -48,14 +48,14 @@ impl<T> Read for ODrive<T> where T: Read {
 impl<T> ODrive<T> where T: Read {
     /// Reads the next message sent by the ODrive as a string.
     /// If their is no message, this function should return an empty string.
-    pub fn read_string(&mut self) -> io::Result<String> {
+    pub fn read_string(&mut self) -> io::Result<Option<String>> {
         let mut string = String::with_capacity(20);
         let duration = Instant::now();
         loop {
             let mut buffer = [0; 1];
             while self.io_stream.read(&mut buffer).unwrap_or_default() == 0 {
                 if duration.elapsed().as_millis() >= 1_000 {
-                    return Ok(string);
+                    return Ok(None);
                 }
             }
             let ch = buffer[0];
@@ -66,18 +66,18 @@ impl<T> ODrive<T> where T: Read {
             string.push(ch as char);
         }
 
-        Ok(string.trim().to_owned())
+        Ok(Some(string.trim().to_owned()))
     }
 
     /// Reads the next message as a float. This will return zero if the message is not a valid
     /// float.
-    pub fn read_float(&mut self) -> io::Result<f32> {
-        Ok(self.read_string()?.parse().unwrap_or_default())
+    pub fn read_float(&mut self) -> io::Result<Option<f32>> {
+        Ok(self.read_string()?.map(|s| s.parse().unwrap_or_default()))
     }
 
     /// Reads the next message as an int. This will return zero if the message is not a valid int.
-    pub fn read_int(&mut self) -> io::Result<i32> {
-        Ok(self.read_string()?.parse().unwrap_or_default())
+    pub fn read_int(&mut self) -> io::Result<Option<i32>> {
+        Ok(self.read_string()?.map(|s| s.parse().unwrap_or_default()))
     }
 }
 
@@ -140,7 +140,7 @@ impl<T> ODrive<T> where T: Write {
 
 impl<T> ODrive<T> where T: Read + Write {
     /// Retrieves the velocity of a motor, in counts per second.
-    pub fn get_velocity(&mut self, axis: Axis) -> io::Result<f32> {
+    pub fn get_velocity(&mut self, axis: Axis) -> io::Result<Option<f32>> {
         writeln!(self.io_stream, "r axis{} .encoder.vel_estimate", axis as u8)?;
         self.flush()?;
         self.read_float()
@@ -158,7 +158,7 @@ impl<T> ODrive<T> where T: Read + Write {
                 writeln!(self.io_stream, "r axis{}.current_state", axis as u8)?;
                 self.flush()?;
                 timeout_ctr -= 1;
-                self.read_int()? != AxisState::Idle as i32 && timeout_ctr > 0 // exit
+                self.read_int()?.unwrap_or_default() != AxisState::Idle as i32 && timeout_ctr > 0 // exit
             } {}
         }
 
