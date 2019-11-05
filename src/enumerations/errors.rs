@@ -1,9 +1,14 @@
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+use std::io;
+
+pub type ODriveResult<T> = Result<T, ODriveError>;
+
+#[derive(Debug)]
 pub enum ODriveError {
     Axis(AxisError),
     Motor(MotorError),
     Encoder(EncoderError),
     Controller(ControllerError),
+    Io(io::Error)
 }
 
 #[repr(u16)]
