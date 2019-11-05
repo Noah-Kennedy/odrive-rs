@@ -1,6 +1,6 @@
 [package]
 name = "odrive-rs"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["Noah Kennedy <nomaxx117@gmail.com>"]
 edition = "2018"
 description = "A library for controlling the ODrive motor controllers."
