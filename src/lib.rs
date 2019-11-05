@@ -5,3 +5,6 @@ pub mod commands;
 /// The `enumerations` module contains enums and constants related to different properties and
 /// errors.
 pub mod enumerations;
+
+#[cfg(test)]
+mod test_stream;
