@@ -1,5 +1,7 @@
 use std::io;
 
+/// The `ODriveResult` type is used as a return type for operations which read to
+/// or write from the ODrive.
 pub type ODriveResult<T> = Result<T, ODriveError>;
 
 #[derive(Debug)]
@@ -8,6 +10,9 @@ pub enum ODriveError {
     Motor(MotorError),
     Encoder(EncoderError),
     Controller(ControllerError),
+    /// Used when the ODrive sends us an invalid message.
+    /// If you see this, file an issue.
+    InvalidMessageReceived(String),
     Io(io::Error)
 }
 
