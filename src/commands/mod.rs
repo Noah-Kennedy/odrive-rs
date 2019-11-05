@@ -91,7 +91,8 @@ impl<T> ODrive<T> where T: Write {
     /// `velocity_feed_forward` is the velocity feed forward term, in encoder counts per second.
     /// `current_feed_forward` is the current feed forward term, in amps.
     /// If `None` is supplied for a feed forward input, zero will be provided as a default.
-    pub fn set_position_p(&mut self, axis: Axis, position: f32, velocity_feed_forward: Option<f32>, current_feed_forward: Option<f32>) -> io::Result<()> {
+    pub fn set_position_p(&mut self, axis: Axis, position: f32, velocity_feed_forward: Option<f32>,
+                          current_feed_forward: Option<f32>) -> io::Result<()> {
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
         writeln!(self.io_stream, "p {} {} {} {}", axis as u8, position, velocity_feed_forward, current_feed_forward)?;
@@ -104,7 +105,8 @@ impl<T> ODrive<T> where T: Write {
     /// `velocity_limit` is the velocity limit, in encoder counts per second.
     /// `current_limit` is the current limit, in amps.
     /// If `None` is supplied for a limit, zero will be provided as a default.
-    pub fn set_position_q(&mut self, axis: Axis, position: f32, velocity_limit: Option<f32>, current_limit: Option<f32>) -> io::Result<()> {
+    pub fn set_position_q(&mut self, axis: Axis, position: f32, velocity_limit: Option<f32>,
+                          current_limit: Option<f32>) -> io::Result<()> {
         let velocity_limit = velocity_limit.unwrap_or_default();
         let current_limit = current_limit.unwrap_or_default();
         writeln!(self.io_stream, "q {} {} {} {}", axis as u8, position, velocity_limit, current_limit)?;
@@ -181,7 +183,7 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 
     fn set_config_bool(&mut self, axis: Axis, name: &str, value: bool) -> ODriveResult<()> {
-        let config = format!("axis{}.config.{}", name, axis as u8);
+        let config = format!("axis{}.config.{}", axis as u8, name);
         self.set_config_variable(&config, value as u8)
     }
 }
