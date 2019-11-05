@@ -19,9 +19,6 @@ arch:
 
 jobs:
   include:
-    - stage: Tests
-      cache: cargo
-      script: cargo test
     - stage: Coverage
       arch: amd64
       rust: nightly
