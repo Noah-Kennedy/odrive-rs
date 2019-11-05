@@ -3,7 +3,8 @@ use std::io;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
-use crate::enumerations::{AxisState, Axis};
+use crate::enumerations::{Axis, AxisState};
+use crate::enumerations::errors::{ODriveError, ODriveResult};
 
 #[cfg(test)]
 mod tests;
@@ -163,5 +164,37 @@ impl<T> ODrive<T> where T: Read + Write {
         }
 
         Ok(timeout_ctr > 0)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Startup routine
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    fn set_config_bool(&mut self, axis: Axis, name: &str, value: bool) -> ODriveResult<()> {
+        if let Err(error) = writeln!(self.io_stream, "w axis{}.config.{} {}", name, axis as u8, value as u8) {
+            ODriveResult::Err(ODriveError::Io(error))
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn set_config_startup_motor_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
+        self.set_config_bool(axis, "startup_motor_calibration", value)
+    }
+
+    pub fn set_config_startup_encoder_index_search(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
+        self.set_config_bool(axis, "startup_encoder_index_search", value)
+    }
+
+    pub fn set_config_startup_encoder_offset_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
+        self.set_config_bool(axis, "startup_encoder_offset_calibration", value)
+    }
+
+    pub fn set_config_startup_closed_loop_control(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
+        self.set_config_bool(axis, "startup_closed_loop_control", value)
+    }
+
+    pub fn set_config_startup_sensorless_control(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
+        self.set_config_bool(axis, "startup_sensorless_control", value)
     }
 }
