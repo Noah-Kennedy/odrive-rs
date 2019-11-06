@@ -17,16 +17,11 @@ pub enum Axis {
 /// > The user can request a new state by assigning a new value to `<axis>.requested_state`.
 /// > The default state after startup is `AXIS_STATE_IDLE`.
 /// >
-/// > 1. `AXIS_STATE_IDLE` Disable motor PWM and do nothing.
-/// > 2. `AXIS_STATE_STARTUP_SEQUENCE` Run the startup procedure.
-/// > 3. `AXIS_STATE_FULL_CALIBRATION_SEQUENCE` Run motor calibration and then encoder offset calibration (or encoder index search if `<axis>.encoder.config.use_index` is `true`).
-/// > 4. `AXIS_STATE_MOTOR_CALIBRATION` Measure phase resistance and phase inductance of the motor.
-/// >       * To store the results set <`axis>.motor.config.pre_calibrated` to `True` and save the configuration.
-/// >       * After that you don’t have to run the motor calibration on the next start up.
-/// >       * This modifies the variables `<axis>.motor.config.phase_resistance` and `<axis>.motor.config.phase_inductance`.
-/// > 5. `AXIS_STATE_SENSORLESS_CONTROL` Run sensorless control.
-/// >       * The motor must be calibrated (`<axis>.motor.is_calibrated`)
-/// >       * <axis>.controller.control_mode must be `true`.
+/// > 1. `AXIS_STATE_IDLE`
+/// > 2. `AXIS_STATE_STARTUP_SEQUENCE`
+/// > 3. `AXIS_STATE_FULL_CALIBRATION_SEQUENCE`
+/// > 4. `AXIS_STATE_MOTOR_CALIBRATION`
+/// > 5. `AXIS_STATE_SENSORLESS_CONTROL`
 /// > 6. `AXIS_STATE_ENCODER_INDEX_SEARCH` Turn the motor in one direction until the encoder index is traversed.
 /// >           This state can only be entered if `<axis>.encoder.config.use_index` is `true`.
 /// > 7. `AXIS_STATE_ENCODER_OFFSET_CALIBRATION` Turn the motor in one direction for a few seconds and then back to measure the offset between the encoder position and the electrical phase.
@@ -39,11 +34,24 @@ pub enum Axis {
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
     Undefined = 0,
+    /// Disable motor PWM and do nothing
     Idle = 1,
+    /// Run the startup procedure.
     StartupSequence = 2,
+    /// Run motor calibration and then encoder offset calibration
+    /// (or encoder index search if `<axis>.encoder.config.use_index` is `true`).
     FullCalibrationSequence = 3,
+    /// Measure phase resistance and phase inductance of the motor.
+    ///
+    /// To store the results set <`axis>.motor.config.pre_calibrated` to `True` and save the configuration.
+    /// After that you don’t have to run the motor calibration on the next start up.
+    /// This modifies the variables `<axis>.motor.config.phase_resistance` and `<axis>.motor.config.phase_inductance`.
     MotorCalibration = 4,
-    SensorlessControl = 5,
+    /// Run sensorless control.
+    ///
+    /// The motor must be calibrated (`<axis>.motor.is_calibrated`)
+    /// `<axis>.controller.control_mode` must be `true`.
+    Sensntrol = 5,
     EncoderIndexSearch = 6,
     EncoderOffsetCalibration = 7,
     ClosedLoopControl = 8,
