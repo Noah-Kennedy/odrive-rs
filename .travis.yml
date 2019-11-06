@@ -21,6 +21,7 @@ jobs:
         apt:
           packages:
             - libssl-dev
+            - libudev-dev
       arch: amd64
       rust: stable
       cache: cargo
