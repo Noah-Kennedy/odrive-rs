@@ -22,3 +22,12 @@ name = "odrive_usb_test"
 
 [[example]]
 name = "odrive_terminal"
+
+[[example]]
+name = "hoverboard_demo"
+
+[[example]]
+name = "hoverboard_setup"
+
+[[example]]
+name = "hoverboard_calibration"
