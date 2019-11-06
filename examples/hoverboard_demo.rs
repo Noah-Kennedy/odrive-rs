@@ -4,7 +4,7 @@ use std::path::Path;
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
-use odrive_rs::enumerations::{Axis, AxisState, ControlMode, EncoderMode};
+use odrive_rs::enumerations::{Axis, AxisState};
 
 fn main() {
     // Get CLI args
@@ -25,6 +25,6 @@ fn main() {
     odrive.run_state(Axis::Zero, AxisState::ClosedLoopControl, true).unwrap();
     odrive.run_state(Axis::One, AxisState::ClosedLoopControl, true).unwrap();
 
-    odrive.set_velocity(Axis::Zero, 120.0, None).unwrap();
-    odrive.set_velocity(Axis::One, 120.0, None).unwrap();
+    odrive.set_velocity(Axis::Zero, 90.0, None).unwrap();
+    odrive.set_velocity(Axis::One, 90.0, None).unwrap();
 }
