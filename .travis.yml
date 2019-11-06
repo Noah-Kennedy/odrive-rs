@@ -23,6 +23,7 @@ jobs:
             - libssl-dev
       arch: amd64
       rust: stable
+      cache: cargo
       script:
         - cargo install cargo-tarpaulin -f
         - cargo tarpaulin --out Xml
