@@ -7,4 +7,5 @@ pub mod commands;
 pub mod enumerations;
 
 #[cfg(test)]
+#[cfg_attr(tarpaulin, skip)]
 mod test_stream;
