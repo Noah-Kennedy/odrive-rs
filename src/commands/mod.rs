@@ -8,6 +8,7 @@ use crate::enumerations::{Axis, AxisState, ControlMode, EncoderMode};
 use crate::enumerations::errors::{ODriveError, ODriveResult};
 
 #[cfg(test)]
+#[cfg_attr(tarpaulin, skip)]
 mod tests;
 
 /// The `ODrive` struct manages a connection with an ODrive motor over the ASCII protocol.
