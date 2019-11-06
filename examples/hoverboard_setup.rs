@@ -5,6 +5,8 @@ use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
 use odrive_rs::enumerations::{Axis, ControlMode, EncoderMode};
+use std::thread::sleep;
+use std::time::Duration;
 
 fn main() {
     // Get CLI args
@@ -21,6 +23,9 @@ fn main() {
 
     // Create odrive connection
     let mut odrive = ODrive::new(serial);
+
+    sleep(Duration::from_millis(200));
+    odrive.erase_configuration().unwrap();
 
     odrive.set_motor_pole_pairs(Axis::Zero, 15).unwrap();
     odrive.set_motor_pole_pairs(Axis::One, 15).unwrap();
