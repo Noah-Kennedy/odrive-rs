@@ -118,9 +118,9 @@ impl<T> ODrive<T> where T: Write {
     /// `velocity` is the velocity setpoint, in encoder counts per second.
     /// `current_feed_forward` is the current feed forward term, in amps.
     /// If `None` is supplied for a feed forward input, zero will be provided as a default.
-    pub fn set_velocity(&mut self, axis: Axis, position: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
+    pub fn set_velocity(&mut self, axis: Axis, velocity: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.io_stream, "v {} {} {}", axis as u8, position, current_feed_forward)?;
+        writeln!(self.io_stream, "v {} {} {}", axis as u8, velocity, current_feed_forward)?;
         self.flush()
     }
 
