@@ -10,13 +10,18 @@ rust:
   - beta
   - nightly
 
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+  include:
+    - script: cargo test
+
 arch:
   - amd64
   - arm64
 
 jobs:
-  allow_failures:
-    - rust: nightly
   include:
     - stage: Coverage
       addons:
