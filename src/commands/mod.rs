@@ -96,7 +96,7 @@ impl<T> ODrive<T> where T: Write {
                           current_feed_forward: Option<f32>) -> io::Result<()> {
         let velocity_feed_forward = velocity_feed_forward.unwrap_or_default();
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.io_stream, "p {} {} {} {}", axis as u8, position, velocity_feed_forward, current_feed_forward)?;
+        writeln!(self, "p {} {} {} {}", axis as u8, position, velocity_feed_forward, current_feed_forward)?;
         self.flush()
     }
 
@@ -110,7 +110,7 @@ impl<T> ODrive<T> where T: Write {
                           current_limit: Option<f32>) -> io::Result<()> {
         let velocity_limit = velocity_limit.unwrap_or_default();
         let current_limit = current_limit.unwrap_or_default();
-        writeln!(self.io_stream, "q {} {} {} {}", axis as u8, position, velocity_limit, current_limit)?;
+        writeln!(self, "q {} {} {} {}", axis as u8, position, velocity_limit, current_limit)?;
         self.flush()
     }
 
@@ -121,7 +121,7 @@ impl<T> ODrive<T> where T: Write {
     /// If `None` is supplied for a feed forward input, zero will be provided as a default.
     pub fn set_velocity(&mut self, axis: Axis, velocity: f32, current_feed_forward: Option<f32>) -> io::Result<()> {
         let current_feed_forward = current_feed_forward.unwrap_or_default();
-        writeln!(self.io_stream, "v {} {} {}", axis as u8, velocity, current_feed_forward)?;
+        writeln!(self, "v {} {} {}", axis as u8, velocity, current_feed_forward)?;
         self.flush()
     }
 
@@ -129,7 +129,7 @@ impl<T> ODrive<T> where T: Write {
     /// `axis` The motor to be used for the operation.
     /// `current` is the current to be supplied, in amps.
     pub fn set_current(&mut self, axis: Axis, current: f32) -> io::Result<()> {
-        writeln!(self.io_stream, "c {} {}", axis as u8, current)?;
+        writeln!(self, "c {} {}", axis as u8, current)?;
         self.flush()
     }
 
@@ -138,7 +138,7 @@ impl<T> ODrive<T> where T: Write {
     /// `axis` The motor to be used for the operation.
     /// `position` is the desired position, in encoder counts.
     pub fn set_trajectory(&mut self, axis: Axis, position: f32) -> io::Result<()> {
-        writeln!(self.io_stream, "t {} {}", axis as u8, position)?;
+        writeln!(self, "t {} {}", axis as u8, position)?;
         self.flush()
     }
 }
@@ -146,7 +146,7 @@ impl<T> ODrive<T> where T: Write {
 impl<T> ODrive<T> where T: Read + Write {
     /// Retrieves the velocity of a motor, in counts per second.
     pub fn get_velocity(&mut self, axis: Axis) -> io::Result<Option<f32>> {
-        writeln!(self.io_stream, "r axis{} .encoder.vel_estimate", axis as u8)?;
+        writeln!(self, "r axis{} .encoder.vel_estimate", axis as u8)?;
         self.flush()?;
         self.read_float()
     }
@@ -155,12 +155,12 @@ impl<T> ODrive<T> where T: Read + Write {
     /// The `wait` flag indicates whether this command should block until the state is updated.
     pub fn run_state(&mut self, axis: Axis, requested_state: AxisState, wait: bool) -> io::Result<bool> {
         let mut timeout_ctr = 100;
-        writeln!(self.io_stream, "w axis{}.requested_state {}", axis as u8, requested_state as u8)?;
+        writeln!(self, "w axis{}.requested_state {}", axis as u8, requested_state as u8)?;
         self.flush()?;
         if wait {
             while {
                 sleep(Duration::from_millis(100));
-                writeln!(self.io_stream, "r axis{}.current_state", axis as u8)?;
+                writeln!(self, "r axis{}.current_state", axis as u8)?;
                 self.flush()?;
                 timeout_ctr -= 1;
                 self.read_int()?.unwrap_or_default() != AxisState::Idle as i32 && timeout_ctr > 0 // exit
@@ -174,7 +174,7 @@ impl<T> ODrive<T> where T: Read + Write {
 // Implement private helper methods
 impl<T> ODrive<T> where T: Read + Write {
     fn set_config_variable<D: Display>(&mut self, param: &str, value: D) -> ODriveResult<()> {
-        writeln!(self.io_stream, "w {} {}", param, value).map_err(ODriveError::Io)?;
+        writeln!(self, "w {} {}", param, value).map_err(ODriveError::Io)?;
         self.flush().map_err(ODriveError::Io)
     }
 
@@ -231,13 +231,13 @@ impl<T> ODrive<T> where T: Read + Write {
 /// Configuration management.
 impl<T> ODrive<T> where T: Read + Write {
     pub fn save_configuration(&mut self) -> ODriveResult<()> {
-        writeln!(self.io_stream, "ss").map_err(ODriveError::Io)?;
-        self.io_stream.flush().map_err(ODriveError::Io)
+        writeln!(self, "ss").map_err(ODriveError::Io)?;
+        self.flush().map_err(ODriveError::Io)
     }
 
     pub fn erase_configuration(&mut self) -> ODriveResult<()> {
-        writeln!(self.io_stream, "se").map_err(ODriveError::Io)?;
-        self.io_stream.flush().map_err(ODriveError::Io)
+        writeln!(self, "se").map_err(ODriveError::Io)?;
+        self.flush().map_err(ODriveError::Io)
     }
 }
 
