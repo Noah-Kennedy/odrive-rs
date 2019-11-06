@@ -171,7 +171,7 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 }
 
-/// Configuration helpers
+// Implement private helper methods
 impl<T> ODrive<T> where T: Read + Write {
     fn set_config_variable<D: Display>(&mut self, param: &str, value: D) -> ODriveResult<()> {
         writeln!(self.io_stream, "w {} {}", param, value).map_err(ODriveError::Io)?;
@@ -189,8 +189,24 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 }
 
-/// Startup configuration
+/// # Startup Configuration
+/// The ODrive motor controllers have several optional startup procedures which can be enabled.
+/// Each of them has an associated getter and setter which can be invoked to read to and write from
+/// their value.
+///
+/// From the official documentation:
+/// > By default the ODrive takes no action at startup and goes to idle immediately.
+/// > In order to change what startup procedures are used, set the startup procedures you want to `true`.
+/// > The ODrive will sequence all enabled startup actions selected in the order shown below.
+///
+/// > 1. `<axis>.config.startup_motor_calibration`
+/// > 1. `<axis>.config.startup_encoder_index_search`
+/// > 1. `<axis>.config.startup_encoder_offset_calibration`
+/// > 1. `<axis>.config.startup_closed_loop_control`
+/// > 1. `<axis>.config.startup_sensorless_control`
+///
 impl<T> ODrive<T> where T: Read + Write {
+    /// This function sets the motor calibration to run
     pub fn set_startup_motor_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
         self.set_config_bool(axis, "startup_motor_calibration", value)
     }
