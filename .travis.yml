@@ -1,28 +1,26 @@
 language: rust
 
-addons:
-  apt:
-    packages:
-      - libudev-dev
-
-rust:
-  - stable
-  - beta
-  - nightly
-
 matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
-  include:
-    - script: cargo test
-
-arch:
-  - amd64
-  - arm64
 
 jobs:
   include:
+    - stage: Tests
+      addons:
+        apt:
+          packages:
+            - libudev-dev
+      arch:
+        - amd64
+        - arm64
+      rust:
+        - stable
+        - beta
+        - nightly
+      script: cargo test
+
     - stage: Coverage
       addons:
         apt:
