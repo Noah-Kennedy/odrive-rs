@@ -26,6 +26,6 @@ jobs:
       rust: stable
       cache: cargo
       script:
-        - cargo install cargo-tarpaulin;
+        - cargo install cargo-tarpaulin || true
         - cargo tarpaulin --out Xml
         - bash <(curl -s https://codecov.io/bash)
