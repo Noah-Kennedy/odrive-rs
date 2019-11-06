@@ -22,14 +22,9 @@ pub enum Axis {
 /// > 3. `AXIS_STATE_FULL_CALIBRATION_SEQUENCE`
 /// > 4. `AXIS_STATE_MOTOR_CALIBRATION`
 /// > 5. `AXIS_STATE_SENSORLESS_CONTROL`
-/// > 6. `AXIS_STATE_ENCODER_INDEX_SEARCH` Turn the motor in one direction until the encoder index is traversed.
-/// >           This state can only be entered if `<axis>.encoder.config.use_index` is `true`.
-/// > 7. `AXIS_STATE_ENCODER_OFFSET_CALIBRATION` Turn the motor in one direction for a few seconds and then back to measure the offset between the encoder position and the electrical phase.
-/// >       * Can only be entered if the motor is calibrated (`<axis>.motor.is_calibrated`).
-/// >       * A successful encoder calibration will make the `<axis>.encoder.is_ready` go to `true`.
-/// > 8. `AXIS_STATE_CLOSED_LOOP_CONTROL` Run closed loop control.
-/// >       * The action depends on the control mode.
-/// >       * Can only be entered if the motor is calibrated (`<axis>.motor.is_calibrated`) and the encoder is ready (`<axis>.encoder.is_ready`).
+/// > 6. `AXIS_STATE_ENCODER_INDEX_SEARCH`
+/// > 7. `AXIS_STATE_ENCODER_OFFSET_CALIBRATION`
+/// > 8. `AXIS_STATE_CLOSED_LOOP_CONTROL`
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
@@ -49,11 +44,24 @@ pub enum AxisState {
     MotorCalibration = 4,
     /// Run sensorless control.
     ///
-    /// The motor must be calibrated (`<axis>.motor.is_calibrated`)
+    /// The motor must be calibrated (`<axis>.motor.is_calibrated`).
     /// `<axis>.controller.control_mode` must be `true`.
-    Sensntrol = 5,
+    SensorlessControl = 5,
+    /// Turn the motor in one direction until the encoder index is traversed.
+    ///
+    /// This state can only be entered if `<axis>.encoder.config.use_index` is `true`.
     EncoderIndexSearch = 6,
+    /// Turn the motor in one direction for a few seconds and then back
+    /// to measure the offset between the encoder position and the electrical phase.
+    ///
+    /// Can only be entered if the motor is calibrated (`<axis>.motor.is_calibrated`).
+    /// A successful encoder calibration will make the `<axis>.encoder.is_ready` go to `true`.
     EncoderOffsetCalibration = 7,
+    /// Run closed loop control.
+    ///
+    /// The action depends on the control mode.
+    /// Can only be entered if the motor is calibrated (`<axis>.motor.is_calibrated`)
+    /// and the encoder is ready (`<axis>.encoder.is_ready`).
     ClosedLoopControl = 8,
 }
 
