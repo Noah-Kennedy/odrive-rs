@@ -61,3 +61,35 @@ fn test_startup_sensorless_control_setter() {
     assert_eq!(b"w axis0.config.startup_sensorless_control 1\n".to_vec(), odrive.io_stream.buffer);
     assert!(odrive.io_stream.flushed)
 }
+
+#[test]
+fn test_save_configuration() {
+    let mut odrive = init_odrive();
+    odrive.save_configuration().unwrap();
+    assert_eq!(b"ss\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
+#[test]
+fn test_erase_configuration() {
+    let mut odrive = init_odrive();
+    odrive.erase_configuration().unwrap();
+    assert_eq!(b"se\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
+#[test]
+fn test_set_velocity_default() {
+    let mut odrive = init_odrive();
+    odrive.set_velocity(Axis::Zero, 24.0, None).unwrap();
+    assert_eq!(b"v 0 24 0\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
+#[test]
+fn test_set_velocity_feed_forward() {
+    let mut odrive = init_odrive();
+    odrive.set_velocity(Axis::Zero, 24.0, Some(12.0)).unwrap();
+    assert_eq!(b"v 0 24 12\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
