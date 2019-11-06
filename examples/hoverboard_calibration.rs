@@ -1,12 +1,11 @@
 use std::env::args;
-use std::io::{BufRead, BufReader, stdin};
 use std::io::Write;
 use std::path::Path;
 
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
-use odrive_rs::enumerations::{Axis, EncoderMode, ControlMode, AxisState};
+use odrive_rs::enumerations::{Axis, AxisState};
 
 fn main() {
     // Get CLI args
@@ -37,5 +36,5 @@ fn main() {
     odrive.set_encoder_pre_calibrated(Axis::Zero, true).unwrap();
     odrive.set_encoder_pre_calibrated(Axis::One, true).unwrap();
 
-    odrive.save_configuration();
+    odrive.save_configuration().unwrap();
 }
