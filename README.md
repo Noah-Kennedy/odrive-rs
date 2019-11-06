@@ -11,6 +11,12 @@ This library was based heavily on the ODrive python and Arduino libraries.
 - [x] ASCII protocol commands
 - [ ] ODrive property editing
 
+## Examples
+The examples directory has several examples. To run one, run
+```bash
+cargo run --example {Example} -- /dev/ttyACM0
+```
+
 ## Contributing
 If you have any features you would like added, or any bugs you wish to
 report, please submit and issue on the GitHub repo.
