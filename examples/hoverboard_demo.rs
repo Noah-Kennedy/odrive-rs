@@ -1,12 +1,10 @@
 use std::env::args;
-use std::io::{BufRead, BufReader, stdin};
-use std::io::Write;
 use std::path::Path;
 
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
-use odrive_rs::enumerations::{Axis, EncoderMode, ControlMode, AxisState};
+use odrive_rs::enumerations::{Axis, AxisState, ControlMode, EncoderMode};
 
 fn main() {
     // Get CLI args
