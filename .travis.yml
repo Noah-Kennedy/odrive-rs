@@ -25,7 +25,7 @@ jobs:
       arch: amd64
       rust: stable
       cache: cargo
+      before_cache: cargo install cargo-tarpaulin -f
       script:
-        - cargo install cargo-tarpaulin -f
         - cargo tarpaulin --out Xml
         - bash <(curl -s https://codecov.io/bash)
