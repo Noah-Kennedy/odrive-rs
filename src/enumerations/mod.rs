@@ -15,19 +15,20 @@ pub enum Axis {
 /// From the official docs:
 /// > The current state of an axis is indicated by `<axis>.current_state`.
 /// > The user can request a new state by assigning a new value to `<axis>.requested_state`.
-/// > The default state after startup is `AXIS_STATE_IDLE`.
+/// > The default state after startup is `Idle`.
 /// >
-/// > 1. `AXIS_STATE_IDLE`
-/// > 2. `AXIS_STATE_STARTUP_SEQUENCE`
-/// > 3. `AXIS_STATE_FULL_CALIBRATION_SEQUENCE`
-/// > 4. `AXIS_STATE_MOTOR_CALIBRATION`
-/// > 5. `AXIS_STATE_SENSORLESS_CONTROL`
-/// > 6. `AXIS_STATE_ENCODER_INDEX_SEARCH`
-/// > 7. `AXIS_STATE_ENCODER_OFFSET_CALIBRATION`
-/// > 8. `AXIS_STATE_CLOSED_LOOP_CONTROL`
+/// > 1. `Idle`
+/// > 2. `StartupSequence`
+/// > 3. `FullCalibrationSequence`
+/// > 4. `MotorCalibration`
+/// > 5. `SensorlessControl`
+/// > 6. `EncoderIndexSearch`
+/// > 7. `EncoderOffsetCalibration`
+/// > 8. `ClosedLoopControl`
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum AxisState {
+    /// Used for
     Undefined = 0,
     /// Disable motor PWM and do nothing
     Idle = 1,
@@ -38,7 +39,7 @@ pub enum AxisState {
     FullCalibrationSequence = 3,
     /// Measure phase resistance and phase inductance of the motor.
     ///
-    /// To store the results set <`axis>.motor.config.pre_calibrated` to `True` and save the configuration.
+    /// To store the results set <`axis>.motor.config.pre_calibrated` to `true` and save the configuration.
     /// After that you don’t have to run the motor calibration on the next start up.
     /// This modifies the variables `<axis>.motor.config.phase_resistance` and `<axis>.motor.config.phase_inductance`.
     MotorCalibration = 4,
