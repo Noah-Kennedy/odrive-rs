@@ -51,6 +51,17 @@ fn test_read_int() {
 }
 
 #[test]
+fn test_multiple_read_int() {
+    let mut odrive = init_odrive();
+    odrive.io_stream.buffer.append(&mut b"25\n78\n".to_vec());
+    odrive.io_stream.buffer.reverse();
+    let result = odrive.read_int().unwrap().unwrap();
+    assert_eq!(25, result);
+    let result = odrive.read_int().unwrap().unwrap();
+    assert_eq!(78, result);
+}
+
+#[test]
 fn test_read_float() {
     let mut odrive = init_odrive();
     odrive.io_stream.buffer.append(&mut b"25\n".to_vec());
