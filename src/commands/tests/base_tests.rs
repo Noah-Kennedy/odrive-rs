@@ -85,3 +85,15 @@ fn test_read_float() {
     let result = odrive.read_float().unwrap().unwrap();
     assert_eq!(25.0, result);
 }
+
+#[test]
+fn test_get_velocity() {
+    let mut odrive = init_odrive();
+    odrive.io_stream.read_buffer.append(&mut b"25\n".to_vec());
+    odrive.io_stream.read_buffer.reverse();
+    let result = odrive.get_velocity(Axis::Zero).unwrap().unwrap();
+    assert_eq!(25.0, result);
+    assert_eq!(b"r axis0 .encoder.vel_estimate\n".to_vec(), odrive.io_stream.write_buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
