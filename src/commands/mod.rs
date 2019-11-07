@@ -290,11 +290,11 @@ impl<T> ODrive<T> where T: Read + Write {
     }
 
     pub fn set_velocity_integrator_gain(&mut self, axis: Axis, value: f32) -> ODriveResult<()> {
-        self.set_axis_config(axis, "encoder.config.bandwidth", value)
+        self.set_axis_config(axis, "controller.config.vel_integrator_gain", value)
     }
 
     pub fn set_velocity_limit(&mut self, axis: Axis, value: f32) -> ODriveResult<()> {
-        self.set_axis_config(axis, "encoder.config.bandwidth", value)
+        self.set_axis_config(axis, "controller.config.vel_limit", value)
     }
 
     pub fn set_control_mode(&mut self, axis: Axis, mode: ControlMode) -> ODriveResult<()> {
