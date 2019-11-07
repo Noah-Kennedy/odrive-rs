@@ -33,6 +33,22 @@ fn test_set_velocity_feed_forward() {
 }
 
 #[test]
+fn test_set_position_p_default() {
+    let mut odrive = init_odrive();
+    odrive.set_position_p(Axis::Zero, 24.0, None, None).unwrap();
+    assert_eq!(b"p 0 24 0 0\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
+#[test]
+fn test_set_position_q_default() {
+    let mut odrive = init_odrive();
+    odrive.set_position_p(Axis::Zero, 24.0, None, None).unwrap();
+    assert_eq!(b"p 0 24 0 0\n".to_vec(), odrive.io_stream.buffer);
+    assert!(odrive.io_stream.flushed)
+}
+
+#[test]
 fn test_read_string() {
     let mut odrive = init_odrive();
     odrive.io_stream.buffer.append(&mut b"hello\n".to_vec());
