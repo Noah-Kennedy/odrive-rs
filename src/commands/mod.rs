@@ -56,7 +56,7 @@ impl<T> ODrive<T> where T: Read {
         let duration = Instant::now();
         loop {
             let mut buffer = [0; 1];
-            while self.io_stream.read(&mut buffer).unwrap_or_default() == 0 {
+            while self.read(&mut buffer).unwrap_or_default() == 0 {
                 if duration.elapsed().as_millis() >= 1_000 {
                     return Ok(None);
                 }
