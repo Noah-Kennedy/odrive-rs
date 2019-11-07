@@ -9,7 +9,7 @@ use crate::enumerations::errors::{ODriveError, ODriveResult};
 
 #[cfg(test)]
 #[cfg_attr(tarpaulin, skip)]
-mod tests;
+mod command_tests;
 
 /// The `ODrive` struct manages a connection with an ODrive motor over the ASCII protocol.
 /// It acts as a newtype around a connection stream.
