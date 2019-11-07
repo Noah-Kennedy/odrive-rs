@@ -154,20 +154,20 @@ impl<T> ODrive<T> where T: Read + Write {
     /// Changes the state of an axis.
     /// The `wait` flag indicates whether this command should block until the state is updated.
     pub fn run_state(&mut self, axis: Axis, requested_state: AxisState, wait: bool) -> io::Result<bool> {
-        let mut timeout_ctr = 100;
+        let timer = Instant::now();
         writeln!(self, "w axis{}.requested_state {}", axis as u8, requested_state as u8)?;
         self.flush()?;
         if wait {
             while {
-                sleep(Duration::from_millis(100));
                 writeln!(self, "r axis{}.current_state", axis as u8)?;
                 self.flush()?;
-                timeout_ctr -= 1;
-                self.read_int()?.unwrap_or_default() != AxisState::Idle as i32 && timeout_ctr > 0 // exit
+
+                self.read_int()?.unwrap_or_default() != AxisState::Idle as i32
+                    && timer.elapsed().as_millis() < 10_000 // exit
             } {}
         }
 
-        Ok(timeout_ctr > 0)
+        Ok(timer.elapsed().as_millis() < 10_000)
     }
 }
 
