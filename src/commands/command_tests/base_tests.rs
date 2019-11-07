@@ -108,3 +108,13 @@ fn test_run_state_instant_switch() {
     assert!(odrive.io_stream.flushed)
 }
 
+#[test]
+fn test_run_state_delayed_switch() {
+    let mut odrive = init_odrive();
+    odrive.io_stream.read_buffer.append(&mut b"4\n1\n".to_vec());
+    odrive.io_stream.read_buffer.reverse();
+    let result = odrive.run_state(Axis::Zero, AxisState::MotorCalibration, true).unwrap();
+    assert_eq!(true, result);
+    assert_eq!(b"w axis0.requested_state 4\nr axis0.current_state\nr axis0.current_state\n".to_vec(), odrive.io_stream.write_buffer);
+    assert!(odrive.io_stream.flushed)
+}
