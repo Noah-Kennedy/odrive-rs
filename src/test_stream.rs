@@ -1,16 +1,16 @@
-use std::io::{Write, Error, Read};
+use std::io::{Error, Read, Write};
 
 #[derive(Eq, PartialEq, Ord, PartialOrd, Default, Debug, Clone)]
 pub struct MockStream {
     pub buffer: Vec<u8>,
-    pub flushed: bool
+    pub flushed: bool,
 }
 
 impl MockStream {
     pub fn new() -> Self {
         Self {
             buffer: Vec::new(),
-            flushed: false
+            flushed: false,
         }
     }
 }
@@ -31,7 +31,17 @@ impl Write for MockStream {
 
 impl Read for MockStream {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
-        self.buffer = buf.to_vec();
-        Ok(buf.len())
+        let mut count = 0;
+        while count < buf.len() {
+            if let Some(res) = self.buffer.pop() {
+                buf[count] = res;
+            } else {
+                break;
+            }
+
+            count += 1;
+        }
+
+        Ok(count)
     }
 }

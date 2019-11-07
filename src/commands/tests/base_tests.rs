@@ -31,3 +31,21 @@ fn test_set_velocity_feed_forward() {
     assert_eq!(b"v 0 24 12\n".to_vec(), odrive.io_stream.buffer);
     assert!(odrive.io_stream.flushed)
 }
+
+#[test]
+fn test_read_string() {
+    let mut odrive = init_odrive();
+    odrive.io_stream.buffer.append(&mut b"hello\n".to_vec());
+    odrive.io_stream.buffer.reverse();
+    let result = odrive.read_string().unwrap().unwrap();
+    assert_eq!("hello", result);
+}
+
+#[test]
+fn test_read_int() {
+    let mut odrive = init_odrive();
+    odrive.io_stream.buffer.append(&mut b"25\n".to_vec());
+    odrive.io_stream.buffer.reverse();
+    let result = odrive.read_int().unwrap().unwrap();
+    assert_eq!(25, result);
+}
