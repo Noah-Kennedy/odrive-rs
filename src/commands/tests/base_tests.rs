@@ -43,8 +43,8 @@ fn test_set_position_p_default() {
 #[test]
 fn test_set_position_q_default() {
     let mut odrive = init_odrive();
-    odrive.set_position_p(Axis::Zero, 24.0, None, None).unwrap();
-    assert_eq!(b"p 0 24 0 0\n".to_vec(), odrive.io_stream.buffer);
+    odrive.set_position_q(Axis::Zero, 24.0, None, None).unwrap();
+    assert_eq!(b"q 0 24 0 0\n".to_vec(), odrive.io_stream.buffer);
     assert!(odrive.io_stream.flushed)
 }
 
