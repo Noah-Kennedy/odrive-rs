@@ -1,6 +1,9 @@
 //! This file was derived from [the python library](https://github.com/madcowswe/ODrive/blob/master/tools/odrive/enums.py)
 
-/// Contains error enums that can be sent from the ODrive
+/// Contains error enums that can be sent from the ODrive.
+///
+/// At the current moment, error handling is not fully implemented, so not all errors received from
+/// the ODrive will be caught.
 pub mod errors;
 
 /// Used to indicate one of the two motors controlled by the ODrive.
@@ -70,7 +73,7 @@ pub enum AxisState {
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum MotorType {
     HighCurrent = 0,
-    //LowCurrent = 1,
+    LowCurrent = 1,
     MotorTypeGimbal = 2,
 }
 
