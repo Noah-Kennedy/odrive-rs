@@ -1,5 +1,5 @@
 use std::fmt::Display;
-use std::io::{Error, Read, Write};
+use std::io::{BufReader, Error, Read, Write};
 use std::io;
 use std::time::Instant;
 
@@ -13,28 +13,30 @@ mod command_tests;
 /// The `ODrive` struct manages a connection with an ODrive motor over the ASCII protocol.
 /// It acts as a newtype around a connection stream.
 /// This has been tested using serial types from `serialport-rs`.
-#[derive(Debug, Default, Ord, PartialOrd, Eq, PartialEq, Clone)]
-pub struct ODrive<T> {
-    io_stream: T
+#[derive(Debug)]
+pub struct ODrive<T> where T: Read {
+    io_stream: BufReader<T>,
 }
 
-impl<T> ODrive<T> {
+impl<T> ODrive<T> where T: Read {
     /// Although any type can be passed in here, it is suggested that the supplied type `T` be
     /// `Read + Write`. Doing so will unlock the full API.
     pub fn new(io_stream: T) -> Self {
-        Self { io_stream }
+        Self {
+            io_stream: BufReader::new(io_stream)
+        }
     }
 }
 
 /// An implementation of `Write` has been provided as an escape hatch to enable the usage of
 /// operations not yet supported by this library.
-impl<T> Write for ODrive<T> where T: Write {
+impl<T> Write for ODrive<T> where T: Write + Read  {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
-        self.io_stream.write(buf)
+        self.io_stream.get_mut().write(buf)
     }
 
     fn flush(&mut self) -> Result<(), Error> {
-        self.io_stream.flush()
+        self.io_stream.get_mut().flush()
     }
 }
 
@@ -95,7 +97,7 @@ impl<T> ODrive<T> where T: Read {
     }
 }
 
-impl<T> ODrive<T> where T: Write {
+impl<T> ODrive<T> where T: Write  + Read {
     /// Move the motor to a position. Use this command if you have a real-time controller which
     /// is streaming setpoints and tracking a trajectory.
     /// `axis` The motor to be used for the operation.
