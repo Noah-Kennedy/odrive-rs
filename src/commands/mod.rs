@@ -1,8 +1,7 @@
 use std::fmt::Display;
 use std::io::{Error, Read, Write};
 use std::io;
-use std::thread::sleep;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use crate::enumerations::{Axis, AxisState, ControlMode, EncoderMode};
 use crate::enumerations::errors::{ODriveError, ODriveResult};
@@ -50,7 +49,11 @@ impl<T> Read for ODrive<T> where T: Read {
 
 impl<T> ODrive<T> where T: Read {
     /// Reads the next message sent by the ODrive as a string.
-    /// If their is no message, this function should return an empty string.
+    /// If their is no message, this function should return `None`
+    ///
+    /// It is suggested that you only use this if you are directly using the `Write` implementation
+    /// and are expecting a response, as normally the supplied for the ODrive can directly support
+    /// reading any response.
     pub fn read_string(&mut self) -> io::Result<Option<String>> {
         let mut string = String::with_capacity(20);
         let duration = Instant::now();
@@ -74,11 +77,19 @@ impl<T> ODrive<T> where T: Read {
 
     /// Reads the next message as a float. This will return zero if the message is not a valid
     /// float.
+    ///
+    /// It is suggested that you only use this if you are directly using the `Write` implementation
+    /// and are expecting a response, as normally the supplied for the ODrive can directly support
+    /// reading any response.
     pub fn read_float(&mut self) -> io::Result<Option<f32>> {
         Ok(self.read_string()?.map(|s| s.parse().unwrap_or_default()))
     }
 
     /// Reads the next message as an int. This will return zero if the message is not a valid int.
+    ///
+    /// It is suggested that you only use this if you are directly using the `Write` implementation
+    /// and are expecting a response, as normally the supplied for the ODrive can directly support
+    /// reading any response.
     pub fn read_int(&mut self) -> io::Result<Option<i32>> {
         Ok(self.read_string()?.map(|s| s.parse().unwrap_or_default()))
     }
@@ -153,6 +164,10 @@ impl<T> ODrive<T> where T: Read + Write {
 
     /// Changes the state of an axis.
     /// The `wait` flag indicates whether this command should block until the state is updated.
+    /// Returns true unless we are in blocking mode and the operation times out.
+    /// The current timeout is 10 seconds.
+    ///
+    /// This command will likely be deprecated and reworked in a future release.
     pub fn run_state(&mut self, axis: Axis, requested_state: AxisState, wait: bool) -> io::Result<bool> {
         let timer = Instant::now();
         writeln!(self, "w axis{}.requested_state {}", axis as u8, requested_state as u8)?;
@@ -205,8 +220,8 @@ impl<T> ODrive<T> where T: Read + Write {
 /// > 1. `<axis>.config.startup_closed_loop_control`
 /// > 1. `<axis>.config.startup_sensorless_control`
 ///
+/// For further information, see the documentation for `AxisState`.
 impl<T> ODrive<T> where T: Read + Write {
-    /// This function sets the motor calibration to run
     pub fn set_startup_motor_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
         self.set_config_bool(axis, "startup_motor_calibration", value)
     }
@@ -230,11 +245,14 @@ impl<T> ODrive<T> where T: Read + Write {
 
 /// Configuration management.
 impl<T> ODrive<T> where T: Read + Write {
+    /// Saves the current configuration of properties to the ODrives non-volatile memory, allowing
+    /// the configuration to persist after reboots.
     pub fn save_configuration(&mut self) -> ODriveResult<()> {
         writeln!(self, "ss").map_err(ODriveError::Io)?;
         self.flush().map_err(ODriveError::Io)
     }
 
+    /// Reset the current configuration to the factory default settings.
     pub fn erase_configuration(&mut self) -> ODriveResult<()> {
         writeln!(self, "se").map_err(ODriveError::Io)?;
         self.flush().map_err(ODriveError::Io)
