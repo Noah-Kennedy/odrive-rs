@@ -13,6 +13,9 @@ mod base_tests;
 #[cfg(test)]
 mod controller_tests;
 
+#[cfg(test)]
+mod motor_tests;
+
 fn init_odrive() -> ODrive<MockStream> {
     let stream = MockStream::default();
     ODrive::new(stream)
