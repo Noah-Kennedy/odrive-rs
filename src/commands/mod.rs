@@ -241,6 +241,26 @@ impl<T> ODrive<T> where T: Read + Write {
     pub fn set_startup_sensorless_control(&mut self, axis: Axis, value: bool) -> ODriveResult<()> {
         self.set_config_bool(axis, "startup_sensorless_control", value)
     }
+
+    pub fn read_startup_motor_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<bool> {
+        unimplemented!()
+    }
+
+    pub fn read_startup_encoder_index_search(&mut self, axis: Axis, value: bool) -> ODriveResult<bool> {
+        unimplemented!()
+    }
+
+    pub fn read_startup_encoder_offset_calibration(&mut self, axis: Axis, value: bool) -> ODriveResult<bool> {
+        unimplemented!()
+    }
+
+    pub fn read_startup_closed_loop_control(&mut self, axis: Axis, value: bool) -> ODriveResult<bool> {
+        unimplemented!()
+    }
+
+    pub fn read_startup_sensorless_control(&mut self, axis: Axis, value: bool) -> ODriveResult<bool> {
+        unimplemented!()
+    }
 }
 
 /// Configuration management.
