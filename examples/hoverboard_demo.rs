@@ -1,10 +1,13 @@
 use std::env::args;
+use std::io::Write;
 use std::path::Path;
+use std::thread::sleep;
+use std::time::Duration;
 
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
-use odrive_rs::enumerations::{Axis, AxisState};
+use odrive_rs::enumerations::{Axis, AxisState, ControlMode};
 
 fn main() {
     // Get CLI args
@@ -22,9 +25,26 @@ fn main() {
     // Create odrive connection
     let mut odrive = ODrive::new(serial);
 
-    odrive.run_state(Axis::Zero, AxisState::ClosedLoopControl, true).unwrap();
-    odrive.run_state(Axis::One, AxisState::ClosedLoopControl, true).unwrap();
+    odrive.run_state(Axis::Zero, AxisState::ClosedLoopControl, false).unwrap();
+    odrive.run_state(Axis::One, AxisState::ClosedLoopControl, false).unwrap();
 
-    odrive.set_velocity(Axis::Zero, 90.0, None).unwrap();
-    odrive.set_velocity(Axis::One, 90.0, None).unwrap();
+    odrive.set_control_mode(Axis::Zero, ControlMode::VelocityControl).unwrap();
+    odrive.set_control_mode(Axis::One, ControlMode::VelocityControl).unwrap();
+
+    loop {
+        println!("Forwards");
+        odrive.set_velocity(Axis::Zero, 630.0, None).unwrap();
+        odrive.set_velocity(Axis::One, 630.0, None).unwrap();
+        sleep(Duration::from_millis(5_000));
+
+        println!("Backwards");
+        odrive.set_velocity(Axis::Zero, -630.0, None).unwrap();
+        odrive.set_velocity(Axis::One, -630.0, None).unwrap();
+        sleep(Duration::from_millis(5_000));
+
+        println!("Stop");
+        odrive.set_velocity(Axis::Zero, 0.0, None).unwrap();
+        odrive.set_velocity(Axis::One, 0.0, None).unwrap();
+        sleep(Duration::from_millis(5_000));
+    }
 }
