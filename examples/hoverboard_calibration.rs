@@ -5,7 +5,7 @@ use std::path::Path;
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::ODrive;
-use odrive_rs::enumerations::{Axis, AxisState};
+use odrive_rs::enumerations::{AxisID, AxisState};
 
 fn main() {
     // Get CLI args
@@ -23,18 +23,18 @@ fn main() {
     // Create odrive connection
     let mut odrive = ODrive::new(serial);
 
-    odrive.run_state(Axis::Zero, AxisState::MotorCalibration, true).unwrap();
-    odrive.run_state(Axis::One, AxisState::MotorCalibration, true).unwrap();
+    odrive.run_state(AxisID::Zero, AxisState::MotorCalibration, true).unwrap();
+    odrive.run_state(AxisID::One, AxisState::MotorCalibration, true).unwrap();
 
     // set motor pre calibrated
     writeln!(odrive, "w axis0.motor.config.pre_calibrated 1").unwrap();
     writeln!(odrive, "w axis1.motor.config.pre_calibrated 1").unwrap();
 
-    odrive.run_state(Axis::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
-    odrive.run_state(Axis::One, AxisState::EncoderOffsetCalibration, true).unwrap();
+    odrive.run_state(AxisID::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
+    odrive.run_state(AxisID::One, AxisState::EncoderOffsetCalibration, true).unwrap();
 
-    odrive.set_encoder_pre_calibrated(Axis::Zero, true).unwrap();
-    odrive.set_encoder_pre_calibrated(Axis::One, true).unwrap();
+    odrive.set_encoder_pre_calibrated(AxisID::Zero, true).unwrap();
+    odrive.set_encoder_pre_calibrated(AxisID::One, true).unwrap();
 
     odrive.save_configuration().unwrap();
 }
