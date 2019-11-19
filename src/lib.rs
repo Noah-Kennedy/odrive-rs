@@ -6,6 +6,8 @@ pub mod commands;
 /// errors.
 pub mod enumerations;
 
+pub mod configuration;
+
 #[cfg(test)]
 #[cfg_attr(tarpaulin, skip)]
 mod test_stream;

@@ -8,7 +8,7 @@ use std::time::{Duration, Instant};
 use serialport::SerialPortSettings;
 
 use odrive_rs::commands::{ODrive};
-use odrive_rs::enumerations::{AxisState, Axis};
+use odrive_rs::enumerations::{AxisState, AxisID};
 
 fn main() {
     // Get CLI args
@@ -60,19 +60,19 @@ fn main() {
                     // Run calibration sequence
                     'c' => {
                         println!("Requesting state {:?}", AxisState::MotorCalibration);
-                        odrive.run_state(Axis::Zero, AxisState::MotorCalibration, true).unwrap();
-                        odrive.run_state(Axis::One, AxisState::MotorCalibration, true).unwrap();
+                        odrive.run_state(AxisID::Zero, AxisState::MotorCalibration, true).unwrap();
+                        odrive.run_state(AxisID::One, AxisState::MotorCalibration, true).unwrap();
 
                         println!("Requesting state {:?}", AxisState::EncoderOffsetCalibration);
-                        odrive.run_state(Axis::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
-                        odrive.run_state(Axis::One, AxisState::EncoderOffsetCalibration, true).unwrap();
+                        odrive.run_state(AxisID::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
+                        odrive.run_state(AxisID::One, AxisState::EncoderOffsetCalibration, true).unwrap();
 
                         println!("Requesting state {:?}", AxisState::ClosedLoopControl);
-                        odrive.run_state(Axis::Zero, AxisState::ClosedLoopControl, false).unwrap();
-                        odrive.run_state(Axis::One, AxisState::ClosedLoopControl, false).unwrap();
+                        odrive.run_state(AxisID::Zero, AxisState::ClosedLoopControl, false).unwrap();
+                        odrive.run_state(AxisID::One, AxisState::ClosedLoopControl, false).unwrap();
                     }
                     '0' | '1' => {
-                        let motor_num = if first == '0' { Axis::Zero } else { Axis::One };
+                        let motor_num = if first == '0' { AxisID::Zero } else { AxisID::One };
 
                         println!("Axis {}: Requesting state {:?}", first, AxisState::MotorCalibration);
                         odrive.run_state(motor_num, AxisState::MotorCalibration, true).unwrap();
@@ -86,13 +86,13 @@ fn main() {
                     // Sinusoidal test move
                     's' => {
                         println!("Executing test move");
-                        odrive.set_velocity(Axis::Zero, 90.0, None).unwrap();
-                        odrive.set_velocity(Axis::One, 90.0, None).unwrap();
+                        odrive.set_velocity(AxisID::Zero, 90.0, None).unwrap();
+                        odrive.set_velocity(AxisID::One, 90.0, None).unwrap();
 
                         sleep(Duration::from_millis(10_000));
 
-                        odrive.set_velocity(Axis::Zero, -90.0, None).unwrap();
-                        odrive.set_velocity(Axis::One, -90.0, None).unwrap();
+                        odrive.set_velocity(AxisID::Zero, -90.0, None).unwrap();
+                        odrive.set_velocity(AxisID::One, -90.0, None).unwrap();
 //                        let mut ph: f32 = 0.0;
 //                        while ph < 6.283_185_5 {
 //                            let pos_m0 = 20000.0 * ph.cos();
