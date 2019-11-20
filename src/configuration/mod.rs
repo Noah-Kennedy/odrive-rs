@@ -1,48 +1,37 @@
 use std::io::{Read, Write};
 
 use crate::commands::ODrive;
-use crate::enumerations::{AxisID, AxisState, ControlMode};
+use crate::enumerations::{AxisID, AxisState, ControlMode, EncoderMode};
 use crate::enumerations::errors::ODriveResult;
+use std::fmt::Display;
+use std::marker::PhantomData;
 
-trait ToODrivePaths {
-    fn to_required_partial_paths(&self) -> Vec<String>;
-    fn to_all_partial_paths(&self) -> Vec<String>;
+trait ToRelativePaths {
+    fn to_relative_paths(&self) -> Vec<String>;
 }
 
-pub struct WriteableEncoderConfiguration {
-    config_use_index: Option<bool>
+pub struct EncoderConfigurationUpdate {
+    config_use_index: Option<bool>,
+    config_pre_calibrated: Option<bool>,
+    config_mode: Option<EncoderMode>,
+    config_cpr: Option<u32>,
+    config_bandwidth: Option<f64>,
 }
 
-pub struct EncoderStateQuery {
-    pub config_use_index: bool,
-    pub is_ready: bool,
-    pub pos_estimate: f64,
-    pub vel_estimate: f64,
-}
-
-pub struct WriteableMotorConfiguration {
+pub struct MotorConfigurationUpdate {
     config_pre_calibrated: Option<bool>,
     config_direction: Option<bool>,
+    config_pole_pairs: Option<u32>,
+    config_resistance_calib_max_voltage: Option<f64>,
+    config_requested_current_range: Option<f64>,
+    config_current_control_bandwidth: Option<f64>
 }
 
-pub struct MotorStateQuery {
-    pub is_calibrated: bool,
-    pub config_phase_resistance: f64,
-    pub config_phase_inductance: f64,
-    pub current_control_iq_setpoint: f64,
-    pub current_control_iq_measured: f64,
-}
-
-pub struct WriteableControllerConfiguration {
+pub struct ControllerConfigurationUpdate {
+    config_pos_gain: Option<f64>,
     config_vel_gain: Option<f64>,
+    config_vel_limit: Option<f64>,
     config_vel_integrator_gain: Option<f64>,
     config_control_mode: Option<ControlMode>,
     vel_setpoint: Option<f64>,
-}
-
-pub struct ControllerStateQuery {
-    pub config_vel_gain: f64,
-    pub config_vel_integrator_gain: f64,
-    pub config_control_mode: ControlMode,
-    pub vel_setpoint: f64,
 }
