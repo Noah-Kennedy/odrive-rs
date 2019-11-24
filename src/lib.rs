@@ -4,9 +4,7 @@ pub mod commands;
 
 /// The `enumerations` module contains enums and constants related to different properties and
 /// errors.
-mod enumerations;
-
-pub mod properties;
+pub mod enumerations;
 
 #[cfg(test)]
 #[cfg_attr(tarpaulin, skip)]

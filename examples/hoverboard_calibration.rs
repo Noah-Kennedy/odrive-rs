@@ -27,8 +27,8 @@ fn main() {
     odrive.run_state(AxisID::One, AxisState::MotorCalibration, true).unwrap();
 
     // set motor pre calibrated
-    writeln!(odrive, "w axis0.motor.config.pre_calibrated 1").unwrap();
-    writeln!(odrive, "w axis1.motor.config.pre_calibrated 1").unwrap();
+    odrive.set_motor_pre_calibrated(AxisID::Zero, true).unwrap();
+    odrive.set_motor_pre_calibrated(AxisID::One, true).unwrap();
 
     odrive.run_state(AxisID::Zero, AxisState::EncoderOffsetCalibration, true).unwrap();
     odrive.run_state(AxisID::One, AxisState::EncoderOffsetCalibration, true).unwrap();

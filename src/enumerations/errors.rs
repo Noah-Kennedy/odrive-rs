@@ -13,6 +13,7 @@ pub enum ODriveError {
     /// Used when the ODrive sends us an invalid message.
     /// If you see this, file an issue.
     InvalidMessageReceived(String),
+    NoMessageReceived,
     Io(io::Error)
 }
 
