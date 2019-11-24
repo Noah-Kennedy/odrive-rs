@@ -9,7 +9,11 @@ This library was based heavily on the ODrive python and Arduino libraries.
 
 ## Roadmap
 - [x] ASCII protocol commands
-- [ ] ODrive property editing
+- [x] ODrive property editing
+- [ ] Documentation
+    - [x]   ASCII Protocol commands 
+    - [ ]   Configuration parameter documentation
+- [ ] Read ODrive errors
 
 ## Examples
 The examples directory has several examples. To run one, run
