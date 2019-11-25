@@ -12,6 +12,7 @@ pub mod enumerations;
 
 /// Tests that the API is stable using macros from the `static_assertions` crate.
 #[cfg(test)]
+#[cfg_attr(tarpaulin, skip)]
 mod api_tests;
 
 #[cfg(test)]
