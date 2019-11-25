@@ -15,7 +15,8 @@ documentation = "https://docs.rs/odrive-rs/"
 [dependencies]
 
 [dev-dependencies]
-serialport = "3.3.0"
+serialport = "~3.3.0"
+static_assertions = "~1.1.0"
 
 [[example]]
 name = "odrive_usb_test"
