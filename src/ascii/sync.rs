@@ -116,7 +116,8 @@ impl<T> AsciiODrive<T> where T: Write + Read {
         writeln!(self.inner.get_mut(), "r {}", endpoint)?;
 
         let mut buf = String::with_capacity(20);
-        self.inner.read_line(&mut buf)?;
+        // TODO add handling for optional sending
+//        self.inner.read_line(&mut buf)?;
 
         Ok(buf)
     }
