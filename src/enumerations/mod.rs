@@ -9,7 +9,7 @@ pub mod errors;
 /// Used to indicate one of the two motors controlled by the ODrive.
 #[repr(u8)]
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
-pub enum AxisID {
+pub enum MotorAxis {
     Zero = 0,
     One = 1,
 }
