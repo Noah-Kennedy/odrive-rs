@@ -141,12 +141,18 @@ impl<T> AsciiODrive<T> where T: Write + Read {
         Ok(buf)
     }
 
-    pub fn write_endpoint(&mut self, endpoint: &str, value: &str) -> io::Result<String> {
+    pub fn write_endpoint(&mut self, endpoint: &str, value: &str) -> io::Result<Option<String>> {
         writeln!(self.inner.get_mut(), "w {} {}", endpoint, value)?;
 
         let mut buf = String::with_capacity(20);
-//        self.inner.read_line(&mut buf)?;
 
-        Ok(buf)
+        if let Err(error) = self.inner.read_line(&mut buf) {
+            match error.kind() {
+                ErrorKind::WouldBlock => Ok(None),
+                _ => Err(error)
+            }
+        } else {
+            Ok(Some(buf))
+        }
     }
 }
