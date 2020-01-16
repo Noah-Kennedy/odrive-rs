@@ -15,6 +15,14 @@ impl<T> AsciiODrive<T> where T: SerialPort {
             inner: BufReader::new(serial)
         }
     }
+
+    pub fn get_mut(&mut self) -> &mut T {
+        self.inner.get_mut()
+    }
+
+    pub fn get_ref(&self) -> &T {
+        self.inner.get_ref()
+    }
 }
 
 impl AsciiODrive<TTYPort> {
@@ -75,6 +83,18 @@ impl<T> AsciiODrive<T> where T: Write {
     pub fn update_watchdog(&mut self, motor: Axis) -> io::Result<()> {
         writeln!(self.inner.get_mut(), "u {}", motor as u8)
     }
+
+    pub fn save_config(&mut self) -> io::Result<()> {
+        writeln!(self.inner.get_mut(), "ss")
+    }
+
+    pub fn erase_config(&mut self) -> io::Result<()> {
+        writeln!(self.inner.get_mut(), "se")
+    }
+
+    pub fn reboot(&mut self) -> io::Result<()> {
+        writeln!(self.inner.get_mut(), "sr")
+    }
 }
 
 impl<T> AsciiODrive<T> where T: Write + Read {
@@ -116,8 +136,7 @@ impl<T> AsciiODrive<T> where T: Write + Read {
         writeln!(self.inner.get_mut(), "r {}", endpoint)?;
 
         let mut buf = String::with_capacity(20);
-        // TODO add handling for optional sending
-//        self.inner.read_line(&mut buf)?;
+        self.inner.read_line(&mut buf)?;
 
         Ok(buf)
     }
@@ -126,7 +145,7 @@ impl<T> AsciiODrive<T> where T: Write + Read {
         writeln!(self.inner.get_mut(), "w {} {}", endpoint, value)?;
 
         let mut buf = String::with_capacity(20);
-        self.inner.read_line(&mut buf)?;
+//        self.inner.read_line(&mut buf)?;
 
         Ok(buf)
     }
